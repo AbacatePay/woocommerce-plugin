@@ -12,20 +12,17 @@ defined( 'ABSPATH' ) || exit;
  *
  * The payment is confirmed by the transparent.completed webhook (AbacatePay_WC_Webhook). As a fallback, the
  * "order received" page polls the charge status and a scheduled action checks it once the Pix expires.
+ *
+ * Its settings screen also holds the credentials shared by all AbacatePay methods.
  */
-class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
+class AbacatePay_WC_Pix_Gateway extends AbacatePay_WC_Gateway {
 
 	const ID = 'abacatepay_pix';
 
-	const META_CHARGE_ID   = '_abacatepay_charge_id';
-	const META_CHARGE_IDS  = '_abacatepay_charge_ids';
-	const META_AMOUNT      = '_abacatepay_amount';
-	const META_BR_CODE     = '_abacatepay_br_code';
-	const META_QR_CODE     = '_abacatepay_qr_code';
-	const META_EXPIRES_AT  = '_abacatepay_expires_at';
-	const META_DEV_MODE    = '_abacatepay_dev_mode';
-	const META_RECEIPT_URL = '_abacatepay_receipt_url';
-	const META_CHECKS      = '_abacatepay_scheduled_checks';
+	const META_BR_CODE    = '_abacatepay_br_code';
+	const META_QR_CODE    = '_abacatepay_qr_code';
+	const META_EXPIRES_AT = '_abacatepay_expires_at';
+	const META_CHECKS     = '_abacatepay_scheduled_checks';
 
 	/**
 	 * Action Scheduler hook that checks the charge after it expires.
@@ -36,11 +33,6 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 	 * Action Scheduler group.
 	 */
 	const CHECK_GROUP = 'abacatepay-for-woocommerce';
-
-	/**
-	 * Smallest amount AbacatePay accepts, in cents.
-	 */
-	const MIN_AMOUNT = 100;
 
 	/**
 	 * Constructor.
@@ -92,7 +84,7 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 				'type'        => 'title',
 				'description' => sprintf(
 					/* translators: 1: list of permissions, 2: link to the documentation */
-					__( 'Create an API key in the AbacatePay dashboard (Integration) with the %1$s permissions. A Dev mode key creates test charges; a production key creates real ones. %2$s', 'abacatepay-for-woocommerce' ),
+					__( 'Used by all AbacatePay payment methods. Create an API key in the AbacatePay dashboard (Integration) with the %1$s permissions. A Dev mode key creates test charges; a production key creates real ones. %2$s', 'abacatepay-for-woocommerce' ),
 					'<code>TRANSPARENT:CREATE</code>, <code>TRANSPARENT:READ</code>, <code>REFUND:CREATE</code>',
 					'<a href="https://docs.abacatepay.com/pages/authentication" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Learn more', 'abacatepay-for-woocommerce' ) . '</a>'
 				),
@@ -132,6 +124,13 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 					'step' => '1',
 				),
 			),
+			'require_customer'     => array(
+				'title'       => __( 'Customer data', 'abacatepay-for-woocommerce' ),
+				'type'        => 'checkbox',
+				'label'       => __( 'Require name, email, CPF/CNPJ and phone to pay with Pix', 'abacatepay-for-woocommerce' ),
+				'description' => __( 'AbacatePay only accepts the customer on a Pix charge with all four fields. When disabled, orders missing any of them are charged without customer data. CPF/CNPJ comes from the "Brazilian Market on WooCommerce" plugin.', 'abacatepay-for-woocommerce' ),
+				'default'     => 'yes',
+			),
 			'status_when_waiting'  => array(
 				'title'       => __( 'Status while awaiting payment', 'abacatepay-for-woocommerce' ),
 				'type'        => 'select',
@@ -163,7 +162,7 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 				'default'     => 'no',
 				'description' => sprintf(
 					/* translators: %s: link to the WooCommerce logs screen */
-					__( 'Logs include customer data. Enable only while troubleshooting. View them in %s.', 'abacatepay-for-woocommerce' ),
+					__( 'Applies to all AbacatePay payment methods. Logs include customer data. Enable only while troubleshooting. View them in %s.', 'abacatepay-for-woocommerce' ),
 					'<a href="' . esc_url( admin_url( 'admin.php?page=wc-status&tab=logs' ) ) . '">' . esc_html__( 'WooCommerce > Status > Logs', 'abacatepay-for-woocommerce' ) . '</a>'
 				),
 			),
@@ -171,74 +170,14 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Statuses that make sense after a confirmed payment.
-	 *
-	 * @return array<string, string>
-	 */
-	private function get_paid_status_options() {
-		$options = array(
-			'' => __( 'WooCommerce default (Processing, or Completed for virtual/downloadable orders)', 'abacatepay-for-woocommerce' ),
-		);
-
-		$excluded = array( 'wc-pending', 'wc-on-hold', 'wc-cancelled', 'wc-refunded', 'wc-failed', 'wc-checkout-draft' );
-
-		foreach ( wc_get_order_statuses() as $status => $label ) {
-			if ( ! in_array( $status, $excluded, true ) ) {
-				$options[ $status ] = $label;
-			}
-		}
-
-		return $options;
-	}
-
-	/**
-	 * Generates the webhook secret on first visit and warns about missing configuration.
+	 * Generates the webhook secret on first visit.
 	 */
 	public function admin_options() {
 		if ( '' === $this->get_option( 'webhook_secret' ) ) {
 			$this->update_option( 'webhook_secret', wp_generate_password( 32, false ) );
 		}
 
-		if ( 'BRL' !== get_woocommerce_currency() ) {
-			echo '<div class="notice notice-error inline"><p>';
-			esc_html_e( 'Pix only works when the store currency is Brazilian real (BRL).', 'abacatepay-for-woocommerce' );
-			echo '</p></div>';
-		}
-
-		if ( 'yes' === $this->enabled && '' === $this->get_api_key() ) {
-			echo '<div class="notice notice-warning inline"><p>';
-			esc_html_e( 'Pix is enabled but will not be offered at checkout until you set an API key.', 'abacatepay-for-woocommerce' );
-			echo '</p></div>';
-		}
-
 		parent::admin_options();
-	}
-
-	/**
-	 * Only available with an API key and the store in BRL.
-	 *
-	 * @return bool
-	 */
-	public function is_available() {
-		return parent::is_available() && '' !== $this->get_api_key() && 'BRL' === get_woocommerce_currency();
-	}
-
-	/**
-	 * Configured API key.
-	 *
-	 * @return string
-	 */
-	public function get_api_key() {
-		return trim( (string) $this->get_option( 'api_key' ) );
-	}
-
-	/**
-	 * API client.
-	 *
-	 * @return AbacatePay_WC_Api
-	 */
-	public function get_api() {
-		return new AbacatePay_WC_Api( $this->get_api_key() );
 	}
 
 	/**
@@ -248,7 +187,16 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 	 * @return array
 	 */
 	public function process_payment( $order_id ) {
-		$order  = wc_get_order( $order_id );
+		$order   = wc_get_order( $order_id );
+		$missing = self::get_missing_customer_fields( $order );
+
+		if ( $missing && 'yes' === $this->get_option( 'require_customer', 'yes' ) ) {
+			/* translators: %s: comma-separated list of fields, e.g. "CPF/CNPJ, phone" */
+			wc_add_notice( sprintf( __( 'To pay with Pix, please fill in: %s.', 'abacatepay-for-woocommerce' ), implode( ', ', $missing ) ), 'error' );
+
+			return array( 'result' => 'failure' );
+		}
+
 		$charge = $this->create_charge( $order );
 
 		if ( is_wp_error( $charge ) ) {
@@ -283,28 +231,6 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Error shown at checkout. Problems the customer can't fix (credentials, permissions, outages) stay in the log.
-	 *
-	 * @param WP_Error $error Error from the API client.
-	 * @return string
-	 */
-	private function get_customer_error_message( WP_Error $error ) {
-		$data   = $error->get_error_data();
-		$status = is_array( $data ) && isset( $data['status'] ) ? (int) $data['status'] : 0;
-
-		if ( 'abacatepay_invalid_amount' === $error->get_error_code() ) {
-			return $error->get_error_message();
-		}
-
-		if ( 'abacatepay_api_error' === $error->get_error_code() && in_array( $status, array( 400, 422 ), true ) ) {
-			/* translators: %s: error message returned by AbacatePay */
-			return sprintf( __( 'Could not create the Pix: %s', 'abacatepay-for-woocommerce' ), $error->get_error_message() );
-		}
-
-		return __( 'Pix is temporarily unavailable. Please try again or choose another payment method.', 'abacatepay-for-woocommerce' );
-	}
-
-	/**
 	 * Creates a Pix charge for the order, or reuses the current one when it is still payable.
 	 *
 	 * Reuse matters when the customer retries from the "Pay for order" page: a new QR code is only issued when
@@ -331,10 +257,7 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 			/* translators: 1: store name, 2: order number */
 			'description' => mb_substr( sprintf( __( '%1$s - Order #%2$s', 'abacatepay-for-woocommerce' ), wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ), $order->get_order_number() ), 0, 500 ),
 			'externalId'  => 'wc-' . $order->get_id() . '-' . wp_generate_password( 8, false ),
-			'metadata'    => array(
-				'wcOrderId'     => (string) $order->get_id(),
-				'wcOrderNumber' => (string) $order->get_order_number(),
-			),
+			'metadata'    => self::get_charge_metadata( $order ),
 		);
 
 		$expiration = absint( $this->get_option( 'expiration_minutes', 60 ) );
@@ -347,6 +270,8 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 
 		if ( $customer ) {
 			$data['customer'] = $customer;
+		} else {
+			AbacatePay_WC_Logger::warning( 'Pix charge for order ' . $order->get_id() . ' sent without customer. Missing: ' . implode( ', ', self::get_missing_customer_fields( $order ) ) );
 		}
 
 		$charge = $this->get_api()->create_pix_charge( apply_filters( 'abacatepay_wc_pix_charge_data', $data, $order ) );
@@ -361,18 +286,11 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 			return new WP_Error( 'abacatepay_invalid_response', __( 'Invalid response from AbacatePay.', 'abacatepay-for-woocommerce' ) );
 		}
 
-		$charge_ids   = (array) $order->get_meta( self::META_CHARGE_IDS );
-		$charge_ids[] = (string) $charge['id'];
-
-		$order->update_meta_data( self::META_CHARGE_ID, (string) $charge['id'] );
-		$order->update_meta_data( self::META_CHARGE_IDS, array_values( array_unique( array_filter( $charge_ids ) ) ) );
-		$order->update_meta_data( self::META_AMOUNT, $amount );
+		$this->store_charge( $order, $charge, $amount );
 		$order->update_meta_data( self::META_BR_CODE, (string) $charge['brCode'] );
 		$order->update_meta_data( self::META_QR_CODE, self::sanitize_qr_code( isset( $charge['brCodeBase64'] ) ? $charge['brCodeBase64'] : '' ) );
 		$order->update_meta_data( self::META_EXPIRES_AT, isset( $charge['expiresAt'] ) ? sanitize_text_field( $charge['expiresAt'] ) : '' );
-		$order->update_meta_data( self::META_DEV_MODE, empty( $charge['devMode'] ) ? 'no' : 'yes' );
 		$order->delete_meta_data( self::META_CHECKS );
-		$order->set_transaction_id( (string) $charge['id'] );
 		$order->save();
 
 		$this->schedule_check( $order );
@@ -415,104 +333,29 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Customer data for the charge. AbacatePay requires all four fields when a customer is sent for Pix,
-	 * so the charge goes without a customer when any of them is missing.
+	 * Order note added when the payment is confirmed.
 	 *
-	 * @param WC_Order $order Order.
-	 * @return array|null
+	 * @return string
 	 */
-	private static function get_customer_data( WC_Order $order ) {
-		$phone = (string) $order->get_meta( '_billing_cellphone' );
-
-		$customer = array(
-			'name'      => trim( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() ),
-			'email'     => is_email( $order->get_billing_email() ) ? $order->get_billing_email() : '',
-			'taxId'     => self::get_tax_id( $order ),
-			'cellphone' => self::format_cellphone( '' !== $phone ? $phone : $order->get_billing_phone() ),
-		);
-
-		return in_array( '', $customer, true ) ? null : $customer;
+	protected function get_payment_confirmed_note() {
+		return __( 'Pix payment confirmed by AbacatePay.', 'abacatepay-for-woocommerce' );
 	}
 
 	/**
-	 * Formatted CPF or CNPJ from the "Brazilian Market on WooCommerce" checkout fields.
-	 *
-	 * @param WC_Order $order Order.
-	 * @return string Empty when missing or malformed.
-	 */
-	private static function get_tax_id( WC_Order $order ) {
-		$cpf  = preg_replace( '/\D+/', '', (string) $order->get_meta( '_billing_cpf' ) );
-		$cnpj = strtoupper( preg_replace( '/[^A-Za-z0-9]+/', '', (string) $order->get_meta( '_billing_cnpj' ) ) );
-
-		// Person type: 1 = individual (CPF), 2 = company (CNPJ).
-		$candidates = '2' === (string) $order->get_meta( '_billing_persontype' ) ? array( $cnpj, $cpf ) : array( $cpf, $cnpj );
-
-		foreach ( $candidates as $tax_id ) {
-			if ( 1 === preg_match( '/^(\d{3})(\d{3})(\d{3})(\d{2})$/', $tax_id, $m ) ) {
-				return "{$m[1]}.{$m[2]}.{$m[3]}-{$m[4]}";
-			}
-
-			// Since July 2026 a CNPJ may have letters in its first 12 characters.
-			if ( 1 === preg_match( '/^([A-Z0-9]{2})([A-Z0-9]{3})([A-Z0-9]{3})([A-Z0-9]{4})(\d{2})$/', $tax_id, $m ) ) {
-				return "{$m[1]}.{$m[2]}.{$m[3]}/{$m[4]}-{$m[5]}";
-			}
-		}
-
-		return '';
-	}
-
-	/**
-	 * Formats a Brazilian phone as "(11) 91234-5678".
-	 *
-	 * @param string $phone Phone as typed by the customer.
-	 * @return string Empty when it doesn't look like a Brazilian number.
-	 */
-	private static function format_cellphone( $phone ) {
-		$digits = preg_replace( '/\D+/', '', (string) $phone );
-
-		if ( strlen( $digits ) > 11 && 0 === strpos( $digits, '55' ) ) {
-			$digits = substr( $digits, 2 );
-		}
-
-		if ( 1 === preg_match( '/^(\d{2})(\d{4,5})(\d{4})$/', $digits, $m ) ) {
-			return "({$m[1]}) {$m[2]}-{$m[3]}";
-		}
-
-		return '';
-	}
-
-	/**
-	 * Confirms the payment. Safe to call more than once.
+	 * Confirms the payment and drops the pending expiration check.
 	 *
 	 * @param WC_Order $order       Order.
 	 * @param string   $receipt_url AbacatePay receipt URL.
 	 * @return bool Whether the order was updated.
 	 */
 	public function mark_order_paid( WC_Order $order, $receipt_url = '' ) {
-		if ( self::is_order_paid( $order ) ) {
-			return false;
+		$updated = parent::mark_order_paid( $order, $receipt_url );
+
+		if ( $updated ) {
+			$this->unschedule_check( $order );
 		}
 
-		if ( '' !== $receipt_url ) {
-			$order->update_meta_data( self::META_RECEIPT_URL, esc_url_raw( $receipt_url ) );
-		}
-
-		$order->add_order_note( __( 'Pix payment confirmed by AbacatePay.', 'abacatepay-for-woocommerce' ) );
-		$order->payment_complete();
-
-		$status = $this->get_option( 'status_when_paid' );
-
-		if ( $status ) {
-			$status = 'wc-' === substr( $status, 0, 3 ) ? substr( $status, 3 ) : $status;
-
-			if ( ! $order->has_status( $status ) ) {
-				$order->update_status( $status );
-			}
-		}
-
-		$this->unschedule_check( $order );
-
-		return true;
+		return $updated;
 	}
 
 	/**
@@ -545,7 +388,7 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 		$charge_id = (string) $order->get_meta( self::META_CHARGE_ID );
 
 		if ( '' === $charge_id ) {
-			return new WP_Error( 'abacatepay_no_charge', __( 'This order has no Pix charge.', 'abacatepay-for-woocommerce' ) );
+			return new WP_Error( 'abacatepay_no_charge', __( 'This order has no AbacatePay charge.', 'abacatepay-for-woocommerce' ) );
 		}
 
 		$charge = $this->get_api()->check_charge( $charge_id );
@@ -621,90 +464,6 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 * Only orders with a Pix charge can be refunded through AbacatePay.
-	 *
-	 * @param WC_Order $order Order.
-	 * @return bool
-	 */
-	public function can_refund_order( $order ) {
-		return parent::can_refund_order( $order ) && '' !== (string) $order->get_meta( self::META_CHARGE_ID );
-	}
-
-	/**
-	 * Refunds through AbacatePay, which only supports refunding the full amount paid.
-	 *
-	 * @param int        $order_id Order ID.
-	 * @param float|null $amount   Amount to refund.
-	 * @param string     $reason   Refund reason.
-	 * @return bool|WP_Error
-	 */
-	public function process_refund( $order_id, $amount = null, $reason = '' ) {
-		$order     = wc_get_order( $order_id );
-		$charge_id = $order ? (string) $order->get_meta( self::META_CHARGE_ID ) : '';
-		$paid      = $order ? (int) $order->get_meta( self::META_AMOUNT ) : 0;
-
-		if ( '' === $charge_id ) {
-			return new WP_Error( 'abacatepay_refund_error', __( 'This order has no Pix charge.', 'abacatepay-for-woocommerce' ) );
-		}
-
-		if ( self::to_cents( $amount ) !== $paid ) {
-			return new WP_Error(
-				'abacatepay_refund_error',
-				sprintf(
-					/* translators: %s: amount paid */
-					__( 'AbacatePay only supports refunding the full amount paid (%s).', 'abacatepay-for-woocommerce' ),
-					// Shown in a JS alert(), so it must be plain text.
-					html_entity_decode( wp_strip_all_tags( wc_price( $paid / 100, array( 'currency' => $order->get_currency() ) ) ), ENT_QUOTES, 'UTF-8' )
-				)
-			);
-		}
-
-		$response = $this->get_api()->refund_charge( $charge_id, mb_substr( (string) $reason, 0, 255 ) );
-
-		if ( is_wp_error( $response ) && ! self::is_already_refunded_error( $response ) ) {
-			return $response;
-		}
-
-		$order->add_order_note( __( 'Pix refunded through AbacatePay.', 'abacatepay-for-woocommerce' ) );
-
-		return true;
-	}
-
-	/**
-	 * AbacatePay answers HTTP 400 "Esta cobrança já foi reembolsada." when the charge was already refunded.
-	 *
-	 * @param WP_Error $error Error.
-	 * @return bool
-	 */
-	private static function is_already_refunded_error( WP_Error $error ) {
-		return false !== mb_stripos( $error->get_error_message(), 'já foi reembolsada' );
-	}
-
-	/**
-	 * Whether the order has been paid, including when the merchant moved it to a custom status.
-	 *
-	 * @param WC_Order $order Order.
-	 * @return bool
-	 */
-	public static function is_order_paid( WC_Order $order ) {
-		return $order->is_paid() || null !== $order->get_date_paid();
-	}
-
-	/**
-	 * Whether the charge belongs to the order (current or a previous attempt).
-	 *
-	 * @param WC_Order $order     Order.
-	 * @param string   $charge_id Charge ID.
-	 * @return bool
-	 */
-	public static function order_has_charge( WC_Order $order, $charge_id ) {
-		$charge_ids   = (array) $order->get_meta( self::META_CHARGE_IDS );
-		$charge_ids[] = (string) $order->get_meta( self::META_CHARGE_ID );
-
-		return '' !== (string) $charge_id && in_array( (string) $charge_id, $charge_ids, true );
-	}
-
-	/**
 	 * Keeps only a PNG data URI, the format AbacatePay uses for brCodeBase64.
 	 *
 	 * @param string $value Data URI.
@@ -712,15 +471,5 @@ class AbacatePay_WC_Pix_Gateway extends WC_Payment_Gateway {
 	 */
 	private static function sanitize_qr_code( $value ) {
 		return 1 === preg_match( '#^data:image/png;base64,[A-Za-z0-9+/]+={0,2}$#', (string) $value ) ? (string) $value : '';
-	}
-
-	/**
-	 * Converts a decimal amount to cents.
-	 *
-	 * @param float|string|null $amount Amount.
-	 * @return int
-	 */
-	public static function to_cents( $amount ) {
-		return (int) round( (float) $amount * 100 );
 	}
 }

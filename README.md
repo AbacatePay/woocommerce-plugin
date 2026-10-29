@@ -38,6 +38,7 @@ abacatepay-for-woocommerce.php            Cabeçalho do plugin, compatibilidade 
 includes/
   class-abacatepay-wc.php                 Bootstrap e registro de hooks
   class-abacatepay-wc-api.php             Cliente da API v2 (create, check, refund, simulate-payment)
+  abstract-abacatepay-wc-gateway.php      Base dos métodos: credenciais, dados do cliente, pago/reembolso, eventos do webhook
   class-abacatepay-wc-pix-gateway.php     WC_Payment_Gateway: cobrança, reembolso, sincronização de status
   class-abacatepay-wc-webhook.php         Receptor do webhook
   class-abacatepay-wc-order-details.php   QR Code na loja e no e-mail, endpoints de status/imagem, box e ações no admin
@@ -59,7 +60,8 @@ languages/                                .pot e tradução pt_BR
 
 - A AbacatePay só aceita reembolso total; reembolsos parciais são recusados na tela do pedido com uma mensagem.
 - O valor mínimo de um Pix é R$ 1,00.
-- O cliente (`customer`) só é enviado quando o pedido tem nome, e-mail, CPF/CNPJ e telefone. Para PIX a API exige os quatro campos juntos. O CPF/CNPJ é lido dos campos do plugin "Brazilian Market on WooCommerce" (`_billing_cpf` / `_billing_cnpj`).
+- Para PIX a API só aceita o `customer` com os quatro campos juntos: nome, e-mail, CPF/CNPJ e telefone. Por padrão o Pix recusa o pedido e diz ao cliente o que falta preencher (opção "Dados do cliente"). Se essa opção for desligada, o pedido é cobrado sem cliente e os campos que faltaram vão para o log. O CPF/CNPJ é lido dos campos do plugin "Brazilian Market on WooCommerce" (`_billing_cpf` / `_billing_cnpj`). O telefone precisa estar como obrigatório no checkout.
+- A chave de API, o secret do webhook e o log de depuração ficam na tela do Pix e valem para todas as formas de pagamento da AbacatePay.
 
 ## Traduções
 

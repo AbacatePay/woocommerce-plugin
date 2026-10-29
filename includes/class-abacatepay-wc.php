@@ -59,6 +59,7 @@ final class AbacatePay_WC {
 	private function includes() {
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-logger.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-api.php';
+		require_once ABACATEPAY_WC_PATH . 'includes/abstract-abacatepay-wc-gateway.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-pix-gateway.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-webhook.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-order-details.php';
@@ -95,14 +96,24 @@ final class AbacatePay_WC {
 	}
 
 	/**
+	 * Returns a loaded AbacatePay gateway by ID.
+	 *
+	 * @param string $id Gateway ID.
+	 * @return AbacatePay_WC_Gateway|null Null for unknown IDs and gateways from other plugins.
+	 */
+	public static function gateway( $id ) {
+		$gateways = WC()->payment_gateways()->payment_gateways();
+
+		return isset( $gateways[ $id ] ) && $gateways[ $id ] instanceof AbacatePay_WC_Gateway ? $gateways[ $id ] : null;
+	}
+
+	/**
 	 * Returns the loaded Pix gateway instance.
 	 *
 	 * @return AbacatePay_WC_Pix_Gateway|null
 	 */
 	public static function pix_gateway() {
-		$gateways = WC()->payment_gateways()->payment_gateways();
-
-		return isset( $gateways[ AbacatePay_WC_Pix_Gateway::ID ] ) ? $gateways[ AbacatePay_WC_Pix_Gateway::ID ] : null;
+		return self::gateway( AbacatePay_WC_Pix_Gateway::ID );
 	}
 
 	/**

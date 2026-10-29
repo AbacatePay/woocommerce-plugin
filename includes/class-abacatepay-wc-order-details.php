@@ -221,17 +221,18 @@ final class AbacatePay_WC_Order_Details {
 	 * @param WC_Order $order Order.
 	 */
 	public static function admin_charge_details( $order ) {
-		$charge_id = (string) $order->get_meta( AbacatePay_WC_Pix_Gateway::META_CHARGE_ID );
+		$charge_id = (string) $order->get_meta( AbacatePay_WC_Gateway::META_CHARGE_ID );
+		$gateway   = AbacatePay_WC::gateway( $order->get_payment_method() );
 
-		if ( AbacatePay_WC_Pix_Gateway::ID !== $order->get_payment_method() || '' === $charge_id ) {
+		if ( ! $gateway || '' === $charge_id ) {
 			return;
 		}
 
-		$receipt_url = (string) $order->get_meta( AbacatePay_WC_Pix_Gateway::META_RECEIPT_URL );
+		$receipt_url = (string) $order->get_meta( AbacatePay_WC_Gateway::META_RECEIPT_URL );
 		$expires_at  = (string) $order->get_meta( AbacatePay_WC_Pix_Gateway::META_EXPIRES_AT );
 		?>
 		<div class="abacatepay-charge-details">
-			<h3><?php esc_html_e( 'AbacatePay Pix', 'abacatepay-for-woocommerce' ); ?></h3>
+			<h3><?php echo esc_html( $gateway->get_method_title() ); ?></h3>
 			<p>
 				<strong><?php esc_html_e( 'Charge ID:', 'abacatepay-for-woocommerce' ); ?></strong>
 				<code><?php echo esc_html( $charge_id ); ?></code>
