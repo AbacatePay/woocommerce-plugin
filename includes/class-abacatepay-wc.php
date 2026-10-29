@@ -43,7 +43,6 @@ final class AbacatePay_WC {
 
 		$this->includes();
 
-		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_filter( 'woocommerce_payment_gateways', array( $this, 'register_gateways' ) );
 		add_action( 'woocommerce_blocks_payment_method_type_registration', array( $this, 'register_block_integrations' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( ABACATEPAY_WC_FILE ), array( $this, 'plugin_action_links' ) );
@@ -69,13 +68,6 @@ final class AbacatePay_WC {
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-webhook.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-order-details.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-boleto-details.php';
-	}
-
-	/**
-	 * Loads translations.
-	 */
-	public function load_textdomain() {
-		load_plugin_textdomain( 'abacatepay-for-woocommerce', false, dirname( plugin_basename( ABACATEPAY_WC_FILE ) ) . '/languages' );
 	}
 
 	/**

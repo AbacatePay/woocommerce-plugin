@@ -103,7 +103,7 @@ Uma tag `v*` enviada à mão também publica a release, e os dois workflows pode
 
 ## Traduções
 
-As strings de origem estão em inglês, com tradução completa para pt_BR em `languages/`. Para regenerar o `.mo` depois de editar o `.po`:
+As strings de origem estão em inglês, com tradução completa para pt_BR em `languages/`. O WordPress (6.8+) carrega essa pasta sozinho pelo cabeçalho `Domain Path`, e as traduções do translate.wordpress.org têm prioridade quando existem. Para regenerar o `.mo` depois de editar o `.po`:
 
 ```bash
 msgfmt -o languages/abacatepay-for-woocommerce-pt_BR.mo languages/abacatepay-for-woocommerce-pt_BR.po
