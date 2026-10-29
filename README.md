@@ -1,6 +1,6 @@
 # AbacatePay for WooCommerce
 
-Plugin de pagamento Pix para WooCommerce usando o [checkout transparente da AbacatePay](https://docs.abacatepay.com/pages/transparents/reference) (API v2).
+Plugin de pagamento Pix e cartão de crédito para WooCommerce usando o [checkout transparente da AbacatePay](https://docs.abacatepay.com/pages/transparents/reference) (API v2).
 
 ## Como funciona
 
@@ -31,6 +31,15 @@ Além disso, o pedido é localizado pelo `metadata.wcOrderId` e a cobrança do e
 | `transparent.disputed` | `UNDER_DISPUTE` coloca o pedido em "Aguardando"; `PAID` devolve para "Processando"; `REFUNDED` registra o reembolso |
 | `transparent.lost` | Registra o reembolso (disputa perdida) |
 
+## Cartão de crédito
+
+1. O formulário do cartão é desenhado pelo [abacatepay.js](https://docs.abacatepay.com/pages/transparents/abacatepay-js) num iframe seguro, com a chave pública (`pk_...`). O número e o CVV nunca passam pela loja.
+2. Ao finalizar o pedido, o navegador chama `tokenize()` (com 3DS quando o banco pede) e envia só o token `ctok_`, as parcelas e, se o checkout não tiver o campo, o CPF/CNPJ do titular. Funciona no checkout clássico, na página "Pagar pedido" e no checkout em blocos.
+3. O servidor cobra na hora com `POST /v2/transparents/create` (`method: "CARD"`). `APPROVED` confirma o pedido; `PENDING` deixa em "Aguardando" até o webhook `transparent.completed`; recusa mostra uma mensagem pedindo outro cartão.
+4. **Timeout, erro de rede ou 5xx não são recusa:** o cartão pode ter sido cobrado. O pedido vai para "Aguardando", não há nova tentativa, e uma tarefa agendada procura a cobrança na listagem (`GET /v2/transparents/list?method=CARD`) pelo `metadata.wcOrderId`. Se o webhook chegar antes, ele é aceito e registra a cobrança. Sem cobrança encontrada depois de 6 consultas, o pedido vira "Malsucedido" e o cliente pode pagar de novo.
+
+Parcelas vão de 1x a 12x (configurável), sem juros para o cliente e com no mínimo R$ 10,00 por parcela. A chave pública e a chave de API precisam ser do mesmo ambiente.
+
 ## Estrutura
 
 ```
@@ -38,10 +47,13 @@ abacatepay-for-woocommerce.php            Cabeçalho do plugin, compatibilidade 
 includes/
   class-abacatepay-wc.php                 Bootstrap e registro de hooks
   class-abacatepay-wc-api.php             Cliente da API v2 (create, check, refund, simulate-payment)
+  abstract-abacatepay-wc-gateway.php      Base dos métodos: credenciais, dados do cliente, pago/reembolso, eventos do webhook
   class-abacatepay-wc-pix-gateway.php     WC_Payment_Gateway: cobrança, reembolso, sincronização de status
   class-abacatepay-wc-webhook.php         Receptor do webhook
   class-abacatepay-wc-order-details.php   QR Code na loja e no e-mail, endpoints de status/imagem, box e ações no admin
   class-abacatepay-wc-pix-blocks-integration.php  Checkout em blocos
+  class-abacatepay-wc-card-gateway.php    Cartão: formulário, cobrança, parcelas, consulta de cobranças sem resposta
+  class-abacatepay-wc-card-blocks-integration.php  Cartão no checkout em blocos
   class-abacatepay-wc-logger.php          Logs em WooCommerce > Status > Logs
 templates/                                Templates sobrescrevíveis pelo tema
 assets/                                   JS/CSS da página do pedido e do checkout em blocos
@@ -54,12 +66,16 @@ languages/                                .pot e tradução pt_BR
 - `abacatepay_wc_api_url` (filter): URL base da API.
 - `abacatepay_wc_webhook_signature_key` (filter): chave usada para validar o HMAC.
 - `abacatepay_wc_pix_icon` (filter): ícone exibido no checkout.
+- `abacatepay_wc_card_charge_data` (filter): dados enviados em `data` na cobrança do cartão.
+- `abacatepay_wc_card_icon` (filter): ícone do cartão no checkout.
+- `abacatepay_wc_order_has_charge` (filter): se uma cobrança recebida no webhook pertence ao pedido.
 
 ## Limitações conhecidas
 
 - A AbacatePay só aceita reembolso total; reembolsos parciais são recusados na tela do pedido com uma mensagem.
 - O valor mínimo de um Pix é R$ 1,00.
-- O cliente (`customer`) só é enviado quando o pedido tem nome, e-mail, CPF/CNPJ e telefone. Para PIX a API exige os quatro campos juntos. O CPF/CNPJ é lido dos campos do plugin "Brazilian Market on WooCommerce" (`_billing_cpf` / `_billing_cnpj`).
+- Para PIX a API só aceita o `customer` com os quatro campos juntos: nome, e-mail, CPF/CNPJ e telefone. Por padrão o Pix recusa o pedido e diz ao cliente o que falta preencher (opção "Dados do cliente"). Se essa opção for desligada, o pedido é cobrado sem cliente e os campos que faltaram vão para o log. O CPF/CNPJ é lido dos campos do plugin "Brazilian Market on WooCommerce" (`_billing_cpf` / `_billing_cnpj`). O telefone precisa estar como obrigatório no checkout.
+- A chave de API, o secret do webhook e o log de depuração ficam na tela do Pix e valem para todas as formas de pagamento da AbacatePay.
 
 ## Traduções
 

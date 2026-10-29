@@ -48,6 +48,8 @@ final class AbacatePay_WC {
 		add_action( 'woocommerce_blocks_payment_method_type_registration', array( $this, 'register_block_integrations' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( ABACATEPAY_WC_FILE ), array( $this, 'plugin_action_links' ) );
 		add_action( AbacatePay_WC_Pix_Gateway::CHECK_HOOK, array( $this, 'run_scheduled_pix_check' ) );
+		add_action( AbacatePay_WC_Card_Gateway::CHECK_HOOK, array( $this, 'run_scheduled_card_check' ) );
+		add_filter( 'abacatepay_wc_order_has_charge', array( 'AbacatePay_WC_Card_Gateway', 'accept_unrecorded_charge' ), 10, 3 );
 
 		AbacatePay_WC_Webhook::init();
 		AbacatePay_WC_Order_Details::init();
@@ -59,7 +61,9 @@ final class AbacatePay_WC {
 	private function includes() {
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-logger.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-api.php';
+		require_once ABACATEPAY_WC_PATH . 'includes/abstract-abacatepay-wc-gateway.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-pix-gateway.php';
+		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-card-gateway.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-webhook.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-order-details.php';
 	}
@@ -79,6 +83,7 @@ final class AbacatePay_WC {
 	 */
 	public function register_gateways( $gateways ) {
 		$gateways[] = 'AbacatePay_WC_Pix_Gateway';
+		$gateways[] = 'AbacatePay_WC_Card_Gateway';
 
 		return $gateways;
 	}
@@ -90,8 +95,22 @@ final class AbacatePay_WC {
 	 */
 	public function register_block_integrations( $registry ) {
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-pix-blocks-integration.php';
+		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-card-blocks-integration.php';
 
 		$registry->register( new AbacatePay_WC_Pix_Blocks_Integration() );
+		$registry->register( new AbacatePay_WC_Card_Blocks_Integration() );
+	}
+
+	/**
+	 * Returns a loaded AbacatePay gateway by ID.
+	 *
+	 * @param string $id Gateway ID.
+	 * @return AbacatePay_WC_Gateway|null Null for unknown IDs and gateways from other plugins.
+	 */
+	public static function gateway( $id ) {
+		$gateways = WC()->payment_gateways()->payment_gateways();
+
+		return isset( $gateways[ $id ] ) && $gateways[ $id ] instanceof AbacatePay_WC_Gateway ? $gateways[ $id ] : null;
 	}
 
 	/**
@@ -100,9 +119,7 @@ final class AbacatePay_WC {
 	 * @return AbacatePay_WC_Pix_Gateway|null
 	 */
 	public static function pix_gateway() {
-		$gateways = WC()->payment_gateways()->payment_gateways();
-
-		return isset( $gateways[ AbacatePay_WC_Pix_Gateway::ID ] ) ? $gateways[ AbacatePay_WC_Pix_Gateway::ID ] : null;
+		return self::gateway( AbacatePay_WC_Pix_Gateway::ID );
 	}
 
 	/**
@@ -112,6 +129,19 @@ final class AbacatePay_WC {
 	 */
 	public function run_scheduled_pix_check( $order_id ) {
 		$gateway = self::pix_gateway();
+
+		if ( $gateway ) {
+			$gateway->run_scheduled_check( (int) $order_id );
+		}
+	}
+
+	/**
+	 * Action Scheduler callback for pending card charges and charges whose result is unknown.
+	 *
+	 * @param int $order_id Order ID.
+	 */
+	public function run_scheduled_card_check( $order_id ) {
+		$gateway = self::gateway( AbacatePay_WC_Card_Gateway::ID );
 
 		if ( $gateway ) {
 			$gateway->run_scheduled_check( (int) $order_id );

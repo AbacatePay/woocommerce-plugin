@@ -71,8 +71,6 @@ final class AbacatePay_WC_Logger {
 	 * @return bool
 	 */
 	private static function is_debug_enabled() {
-		$settings = get_option( 'woocommerce_' . AbacatePay_WC_Pix_Gateway::ID . '_settings', array() );
-
-		return is_array( $settings ) && isset( $settings['debug'] ) && 'yes' === $settings['debug'];
+		return 'yes' === AbacatePay_WC_Gateway::get_shared_setting( 'debug' );
 	}
 }
