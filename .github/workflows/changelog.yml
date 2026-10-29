@@ -1,0 +1,102 @@
+name: Changelog
+
+# Publishes the GitHub release, with the zip attached, for:
+# - a merged release PR (release/vX.Y.Z, opened by scripts/release.sh): tags the merge commit first;
+# - a vX.Y.Z tag pushed by hand;
+# - a manual run, to rebuild the zip of an existing tag.
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g. v1.2.3)'
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.event_name != 'pull_request' || (github.event.pull_request.merged && startsWith(github.head_ref, 'release/v'))
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - name: Resolve tag
+        id: tag
+        run: |
+          case "$GITHUB_EVENT_NAME" in
+            pull_request) TAG="${HEAD_REF#release/}" ;;
+            push) TAG="$GITHUB_REF_NAME" ;;
+            *) TAG="$INPUT_TAG" ;;
+          esac
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          INPUT_TAG: ${{ inputs.tag }}
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.merge_commit_sha || steps.tag.outputs.tag }}
+
+      - name: Check version
+        run: |
+          VERSION=$(sed -n 's/^ \* Version: *\([0-9.]*\).*/\1/p' abacatepay-for-woocommerce.php)
+          if [ "v$VERSION" != "$TAG" ]; then
+            echo "::error::The plugin header says $VERSION, but the tag is $TAG."
+            exit 1
+          fi
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+
+      - name: Create tag
+        if: github.event_name == 'pull_request'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a "$TAG" -m "build(tag): $TAG"
+          git push origin "$TAG"
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+
+      - name: Build zip
+        id: pack
+        run: echo "zip=$(./pack.sh)" >> "$GITHUB_OUTPUT"
+
+      - name: Publish release
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" "$ZIP" --clobber
+            exit 0
+          fi
+
+          scripts/release-notes.sh "${TAG#v}" > notes.md
+
+          if [ -s notes.md ]; then
+            gh release create "$TAG" "$ZIP" --title "$TAG" --notes-file notes.md --verify-tag
+          else
+            gh release create "$TAG" "$ZIP" --title "$TAG" --generate-notes --verify-tag
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          ZIP: ${{ steps.pack.outputs.zip }}
+
+  # Releases created with GITHUB_TOKEN do not trigger other workflows, so the WordPress.org deploy is called from here.
+  wordpress-org:
+    needs: release
+    uses: ./.github/workflows/tag-release.yml
+    with:
+      tag: ${{ needs.release.outputs.tag }}
+    secrets: inherit

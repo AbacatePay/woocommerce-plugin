@@ -89,6 +89,18 @@ languages/                                .pot e tradução pt_BR
 - Para PIX a API só aceita o `customer` com os quatro campos juntos: nome, e-mail, CPF/CNPJ e telefone. Por padrão o Pix recusa o pedido e diz ao cliente o que falta preencher (opção "Dados do cliente"). Se essa opção for desligada, o pedido é cobrado sem cliente e os campos que faltaram vão para o log. O CPF/CNPJ é lido dos campos do plugin "Brazilian Market on WooCommerce" (`_billing_cpf` / `_billing_cnpj`). O telefone precisa estar como obrigatório no checkout.
 - A chave de API, o secret do webhook e o log de depuração ficam na tela do Pix e valem para todas as formas de pagamento da AbacatePay.
 
+## Gerar o zip e publicar versões
+
+`./pack.sh` (ou `pnpm zip`) gera `dist/abacatepay-for-woocommerce-v<versão>.zip` a partir dos arquivos da pasta, sem o que está em `.distignore`. O zip tem a pasta `abacatepay-for-woocommerce/` na raiz, pronto para Plugins > Adicionar novo > Enviar plugin.
+
+Para lançar uma versão:
+
+1. Rode `pnpm release:patch`, `release:minor` ou `release:major` (ou `scripts/release.sh 1.2.3` para uma versão exata). O script cria a branch `release/vX.Y.Z` a partir da `main`, atualiza a versão no plugin e no `readme.txt`, escreve o `CHANGELOG.md` a partir dos commits (Conventional Commits) desde a última tag e abre o PR com `gh`.
+2. Ao fazer o merge do PR, o workflow `Changelog` cria a tag `vX.Y.Z` no commit do merge, gera o zip e publica a release no GitHub com o zip anexado e o changelog da versão.
+3. Em seguida o workflow `Tag Release` envia a versão ao diretório do WordPress.org (SVN `trunk` e `tags/X.Y.Z`). Ele só roda quando os secrets `SVN_USERNAME` e `SVN_PASSWORD` estão configurados; `SVN_REPO_URL` é opcional (padrão `https://plugins.svn.wordpress.org/abacatepay-for-woocommerce`).
+
+Uma tag `v*` enviada à mão também publica a release, e os dois workflows podem ser rodados manualmente com `gh workflow run changelog.yml -f tag=vX.Y.Z` para refazer o zip de uma tag existente.
+
 ## Traduções
 
 As strings de origem estão em inglês, com tradução completa para pt_BR em `languages/`. Para regenerar o `.mo` depois de editar o `.po`:
