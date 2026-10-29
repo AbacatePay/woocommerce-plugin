@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AbacatePay for WooCommerce
  * Plugin URI: https://docs.abacatepay.com
- * Description: Accept Pix payments with AbacatePay: QR Code and Pix Copy and Paste right on your store, with automatic order confirmation.
+ * Description: Accept Pix, credit card and boleto payments with AbacatePay, with automatic order confirmation.
  * Version: 1.0.0
  * Author: AbacatePay
  * Author URI: https://www.abacatepay.com

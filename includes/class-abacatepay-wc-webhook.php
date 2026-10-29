@@ -47,8 +47,7 @@ final class AbacatePay_WC_Webhook {
 	public static function handle() {
 		$body = (string) file_get_contents( 'php://input' );
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Authenticated by the webhook secret.
-		$secret = isset( $_GET['webhookSecret'] ) ? (string) wp_unslash( $_GET['webhookSecret'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$secret = isset( $_GET['webhookSecret'] ) ? sanitize_text_field( wp_unslash( $_GET['webhookSecret'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Server-to-server request, authenticated by the webhook secret.
 		$stored = AbacatePay_WC_Gateway::get_shared_setting( 'webhook_secret' );
 
 		if ( '' === $stored || ! hash_equals( $stored, $secret ) ) {
