@@ -22,6 +22,7 @@ O cliente finaliza a compra e vê o QR Code e o código Pix Copia e Cola na pág
 * Reembolso pela tela do pedido (a AbacatePay só permite reembolso total).
 * Reembolsos e disputas feitos fora do WooCommerce também atualizam o pedido.
 * Dev mode: cobranças de teste e botão "Simular pagamento do Pix" no pedido.
+* Cartão de crédito em até 12x, com o formulário seguro da AbacatePay (3DS incluído). Os dados do cartão nunca passam pela loja.
 * Compatível com o checkout em blocos e com HPOS.
 * Envia CPF/CNPJ do cliente quando a loja usa o plugin "Brazilian Market on WooCommerce".
 
@@ -32,6 +33,7 @@ O cliente finaliza a compra e vê o QR Code e o código Pix Copia e Cola na pág
 3. No dashboard da AbacatePay (Integração), crie uma chave de API com as permissões `TRANSPARENT:CREATE`, `TRANSPARENT:READ` e `REFUND:CREATE` e cole em "Chave de API". Uma chave de Dev mode gera cobranças de teste.
 4. No dashboard da AbacatePay, crie um webhook com a URL e o secret exibidos na tela de configurações, assinando os eventos `transparent.completed`, `transparent.refunded`, `transparent.disputed` e `transparent.lost`. A URL precisa ser HTTPS pública.
 5. A moeda da loja precisa ser o real brasileiro (BRL).
+6. Para cartão: em WooCommerce > Configurações > Pagamentos > Cartão de crédito AbacatePay, cole a chave pública (`pk_...`, em Integração > Checkout próprio no dashboard), do mesmo ambiente da chave de API.
 
 == Frequently Asked Questions ==
 

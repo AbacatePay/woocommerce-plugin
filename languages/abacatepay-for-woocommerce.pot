@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AbacatePay for WooCommerce 1.0.0\n"
 "Report-Msgid-Bugs-To: ajuda@abacatepay.com\n"
-"POT-Creation-Date: 2026-10-29 17:31+0000\n"
+"POT-Creation-Date: 2026-10-29 17:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,6 +36,7 @@ msgid ""
 msgstr ""
 
 #: includes/abstract-abacatepay-wc-gateway.php:103
+#: includes/class-abacatepay-wc-card-gateway.php:119
 msgid "AbacatePay Pix settings"
 msgstr ""
 
@@ -62,6 +63,7 @@ msgid "Payment confirmed by AbacatePay."
 msgstr ""
 
 #: includes/abstract-abacatepay-wc-gateway.php:257
+#: includes/class-abacatepay-wc-card-gateway.php:669
 #: includes/class-abacatepay-wc-pix-gateway.php:391
 msgid "This order has no AbacatePay charge."
 msgstr ""
@@ -117,14 +119,252 @@ msgstr ""
 msgid "phone"
 msgstr ""
 
-#: includes/class-abacatepay-wc-api.php:121
+#: includes/class-abacatepay-wc-api.php:158
 msgid "Could not connect to AbacatePay."
 msgstr ""
 
 #. translators: %d: HTTP status code
-#: includes/class-abacatepay-wc-api.php:142
+#: includes/class-abacatepay-wc-api.php:179
 #, php-format
 msgid "Unexpected response from AbacatePay (HTTP %d)."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-blocks-integration.php:67
+#: includes/class-abacatepay-wc-card-gateway.php:104
+msgid "Credit card"
+msgstr ""
+
+#. translators: %s: order total
+#: includes/class-abacatepay-wc-card-blocks-integration.php:76
+#: includes/class-abacatepay-wc-card-gateway.php:289
+#, php-format
+msgid "1x of %s"
+msgstr ""
+
+#. translators: 1: number of installments, 2: installment amount
+#: includes/class-abacatepay-wc-card-blocks-integration.php:78
+#: includes/class-abacatepay-wc-card-gateway.php:291
+#, php-format
+msgid "%1$dx of %2$s interest-free"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:66
+msgid "AbacatePay Credit Card"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:67
+msgid ""
+"Accept credit cards through AbacatePay, in up to 12 installments. Card "
+"details are typed in a secure AbacatePay form and never reach the store."
+msgstr ""
+
+#. translators: %d: number of installments
+#: includes/class-abacatepay-wc-card-gateway.php:89
+msgid "Single payment only"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:89
+#, php-format
+msgid "Up to %dx"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:94
+#: includes/class-abacatepay-wc-pix-gateway.php:63
+msgid "Enable/Disable"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:96
+msgid "Enable credit card"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:100
+#: includes/class-abacatepay-wc-pix-gateway.php:69
+msgid "Title"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:102
+#: includes/class-abacatepay-wc-pix-gateway.php:71
+msgid "Payment method name shown to the customer at checkout."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:107
+#: includes/class-abacatepay-wc-pix-gateway.php:76
+msgid "Description"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:109
+#: includes/class-abacatepay-wc-pix-gateway.php:78
+msgid "Text shown to the customer at checkout."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:111
+msgid "Pay with your credit card."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:114
+msgid "Card form"
+msgstr ""
+
+#. translators: %s: link to the settings screen with the API key
+#: includes/class-abacatepay-wc-card-gateway.php:118
+#, php-format
+msgid ""
+"The API key, webhook and debug log are shared with Pix: configure them in "
+"%s. The public key and the API key must be from the same environment (both "
+"Dev mode or both production), or every charge fails with \"Invalid or "
+"expired card token\"."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:123
+msgid "Public key"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:125
+msgid ""
+"Starts with pk_. Find it in the AbacatePay dashboard, under Integration > "
+"Own checkout. It is safe to show in the browser."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:130
+#: includes/class-abacatepay-wc-card-gateway.php:220
+#: includes/class-abacatepay-wc-card-gateway.php:269
+msgid "Installments"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:133
+msgid ""
+"Interest-free for the customer. Each installment must be at least R$ 10.00, "
+"so fewer options are offered for small orders."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:138
+#: includes/class-abacatepay-wc-pix-gateway.php:146
+msgid "Status after payment"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:153
+msgid ""
+"Credit card is enabled but will not be offered at checkout until you set the "
+"public key."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:213
+#: includes/class-abacatepay-wc-card-gateway.php:268
+msgid "Cardholder CPF or CNPJ"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:259
+msgid "Please fill in all the card fields."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:260
+msgid "Please check the card details."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:261
+msgid ""
+"The card authentication was not completed. Try again or use another card."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:262
+msgid "Please check your name, email and CPF/CNPJ."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:263
+msgid "Please fill in the cardholder CPF or CNPJ."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:264
+msgid "The card form did not load. Reload the page and try again."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:265
+msgid "Connection failed. Please try again."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:266
+msgid "Your card was declined. Please try another card."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:267
+msgid "Could not process the card. Please try again."
+msgstr ""
+
+#. translators: %s: comma-separated list of fields, e.g. "CPF/CNPJ, phone"
+#: includes/class-abacatepay-wc-card-gateway.php:343
+#, php-format
+msgid "To pay by card, please fill in: %s."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:354
+msgid "Could not read the card. Please check the card details and try again."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:362
+msgid "Card payments must be at least R$ 1.00."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:370
+#: includes/class-abacatepay-wc-card-gateway.php:496
+msgid "This number of installments is not available for this order."
+msgstr ""
+
+#. translators: %s: error message returned by AbacatePay
+#: includes/class-abacatepay-wc-card-gateway.php:397
+#, php-format
+msgid "AbacatePay refused the card charge: %s"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:417
+msgid ""
+"Card payment awaiting the bank response. The order will be updated by "
+"AbacatePay."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:420
+#: includes/class-abacatepay-wc-card-gateway.php:685
+msgid "Card payment declined."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:437
+msgid ""
+"AbacatePay did not answer the card charge request, so the card may have been "
+"charged. The order will be updated automatically once the charge is found. "
+"Do not charge the customer again."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:440
+msgid ""
+"We are confirming your card payment. You will receive an email once it is "
+"approved."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:488
+msgid "Could not confirm the card. Please try again."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:492
+msgid "Invalid CPF/CNPJ. Please check it and try again."
+msgstr ""
+
+#. translators: 1: charge ID, 2: charge status, 3: card description
+#: includes/class-abacatepay-wc-card-gateway.php:548
+#, php-format
+msgid "AbacatePay card charge %1$s (%2$s): %3$s."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:551
+msgid "card"
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:591
+msgid "Card payment approved by AbacatePay."
+msgstr ""
+
+#: includes/class-abacatepay-wc-card-gateway.php:754
+msgid ""
+"No card charge was found on AbacatePay for this order, so the customer was "
+"not charged."
 msgstr ""
 
 #: includes/class-abacatepay-wc-order-details.php:237
@@ -189,28 +429,8 @@ msgid ""
 "the order is confirmed automatically once paid."
 msgstr ""
 
-#: includes/class-abacatepay-wc-pix-gateway.php:63
-msgid "Enable/Disable"
-msgstr ""
-
 #: includes/class-abacatepay-wc-pix-gateway.php:65
 msgid "Enable Pix"
-msgstr ""
-
-#: includes/class-abacatepay-wc-pix-gateway.php:69
-msgid "Title"
-msgstr ""
-
-#: includes/class-abacatepay-wc-pix-gateway.php:71
-msgid "Payment method name shown to the customer at checkout."
-msgstr ""
-
-#: includes/class-abacatepay-wc-pix-gateway.php:76
-msgid "Description"
-msgstr ""
-
-#: includes/class-abacatepay-wc-pix-gateway.php:78
-msgid "Text shown to the customer at checkout."
 msgstr ""
 
 #: includes/class-abacatepay-wc-pix-gateway.php:80
@@ -309,10 +529,6 @@ msgctxt "Order status"
 msgid "Pending payment"
 msgstr ""
 
-#: includes/class-abacatepay-wc-pix-gateway.php:146
-msgid "Status after payment"
-msgstr ""
-
 #: includes/class-abacatepay-wc-pix-gateway.php:153
 msgid "Expired Pix"
 msgstr ""
@@ -373,11 +589,11 @@ msgstr ""
 msgid "Pix expired without payment."
 msgstr ""
 
-#: includes/class-abacatepay-wc.php:143
+#: includes/class-abacatepay-wc.php:162
 msgid "Settings"
 msgstr ""
 
-#: includes/class-abacatepay-wc.php:154
+#: includes/class-abacatepay-wc.php:173
 msgid ""
 "AbacatePay for WooCommerce requires WooCommerce to be installed and active."
 msgstr ""

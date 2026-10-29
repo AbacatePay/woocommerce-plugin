@@ -1,6 +1,6 @@
 # AbacatePay for WooCommerce
 
-Plugin de pagamento Pix para WooCommerce usando o [checkout transparente da AbacatePay](https://docs.abacatepay.com/pages/transparents/reference) (API v2).
+Plugin de pagamento Pix e cartão de crédito para WooCommerce usando o [checkout transparente da AbacatePay](https://docs.abacatepay.com/pages/transparents/reference) (API v2).
 
 ## Como funciona
 
@@ -31,6 +31,15 @@ Além disso, o pedido é localizado pelo `metadata.wcOrderId` e a cobrança do e
 | `transparent.disputed` | `UNDER_DISPUTE` coloca o pedido em "Aguardando"; `PAID` devolve para "Processando"; `REFUNDED` registra o reembolso |
 | `transparent.lost` | Registra o reembolso (disputa perdida) |
 
+## Cartão de crédito
+
+1. O formulário do cartão é desenhado pelo [abacatepay.js](https://docs.abacatepay.com/pages/transparents/abacatepay-js) num iframe seguro, com a chave pública (`pk_...`). O número e o CVV nunca passam pela loja.
+2. Ao finalizar o pedido, o navegador chama `tokenize()` (com 3DS quando o banco pede) e envia só o token `ctok_`, as parcelas e, se o checkout não tiver o campo, o CPF/CNPJ do titular. Funciona no checkout clássico, na página "Pagar pedido" e no checkout em blocos.
+3. O servidor cobra na hora com `POST /v2/transparents/create` (`method: "CARD"`). `APPROVED` confirma o pedido; `PENDING` deixa em "Aguardando" até o webhook `transparent.completed`; recusa mostra uma mensagem pedindo outro cartão.
+4. **Timeout, erro de rede ou 5xx não são recusa:** o cartão pode ter sido cobrado. O pedido vai para "Aguardando", não há nova tentativa, e uma tarefa agendada procura a cobrança na listagem (`GET /v2/transparents/list?method=CARD`) pelo `metadata.wcOrderId`. Se o webhook chegar antes, ele é aceito e registra a cobrança. Sem cobrança encontrada depois de 6 consultas, o pedido vira "Malsucedido" e o cliente pode pagar de novo.
+
+Parcelas vão de 1x a 12x (configurável), sem juros para o cliente e com no mínimo R$ 10,00 por parcela. A chave pública e a chave de API precisam ser do mesmo ambiente.
+
 ## Estrutura
 
 ```
@@ -43,6 +52,8 @@ includes/
   class-abacatepay-wc-webhook.php         Receptor do webhook
   class-abacatepay-wc-order-details.php   QR Code na loja e no e-mail, endpoints de status/imagem, box e ações no admin
   class-abacatepay-wc-pix-blocks-integration.php  Checkout em blocos
+  class-abacatepay-wc-card-gateway.php    Cartão: formulário, cobrança, parcelas, consulta de cobranças sem resposta
+  class-abacatepay-wc-card-blocks-integration.php  Cartão no checkout em blocos
   class-abacatepay-wc-logger.php          Logs em WooCommerce > Status > Logs
 templates/                                Templates sobrescrevíveis pelo tema
 assets/                                   JS/CSS da página do pedido e do checkout em blocos
@@ -55,6 +66,9 @@ languages/                                .pot e tradução pt_BR
 - `abacatepay_wc_api_url` (filter): URL base da API.
 - `abacatepay_wc_webhook_signature_key` (filter): chave usada para validar o HMAC.
 - `abacatepay_wc_pix_icon` (filter): ícone exibido no checkout.
+- `abacatepay_wc_card_charge_data` (filter): dados enviados em `data` na cobrança do cartão.
+- `abacatepay_wc_card_icon` (filter): ícone do cartão no checkout.
+- `abacatepay_wc_order_has_charge` (filter): se uma cobrança recebida no webhook pertence ao pedido.
 
 ## Limitações conhecidas
 

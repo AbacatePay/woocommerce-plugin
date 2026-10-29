@@ -550,8 +550,10 @@ abstract class AbacatePay_WC_Gateway extends WC_Payment_Gateway {
 	public static function order_has_charge( WC_Order $order, $charge_id ) {
 		$charge_ids   = (array) $order->get_meta( self::META_CHARGE_IDS );
 		$charge_ids[] = (string) $order->get_meta( self::META_CHARGE_ID );
+		$has_charge   = '' !== (string) $charge_id && in_array( (string) $charge_id, $charge_ids, true );
 
-		return '' !== (string) $charge_id && in_array( (string) $charge_id, $charge_ids, true );
+		// Lets a method accept a charge it could not record yet (e.g. card charge whose response timed out).
+		return (bool) apply_filters( 'abacatepay_wc_order_has_charge', $has_charge, $order, (string) $charge_id );
 	}
 
 	/**

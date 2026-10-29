@@ -52,6 +52,43 @@ class AbacatePay_WC_Api {
 	}
 
 	/**
+	 * Charges a credit card. Requires the TRANSPARENT:CREATE permission.
+	 *
+	 * @param array $data Charge data (amount in cents, token, installmentCount, customer, metadata).
+	 * @return array|WP_Error The charge (id, status, brand, lastFour, installmentCount...).
+	 */
+	public function create_card_charge( array $data ) {
+		return $this->request(
+			'POST',
+			'/transparents/create',
+			array(
+				'method' => 'CARD',
+				'data'   => $data,
+			)
+		);
+	}
+
+	/**
+	 * Full charge, for any method. Card charges must use this instead of check_charge(). Requires TRANSPARENT:READ.
+	 *
+	 * @param string $charge_id Charge ID (card_..., pix_char_...).
+	 * @return array|WP_Error
+	 */
+	public function get_charge( $charge_id ) {
+		return $this->request( 'GET', '/transparents/get?id=' . rawurlencode( $charge_id ) );
+	}
+
+	/**
+	 * Lists charges, newest first. Requires TRANSPARENT:READ.
+	 *
+	 * @param array $query Filters: method, startDate, endDate (YYYY-MM-DD), limit, after.
+	 * @return array|WP_Error List of charges.
+	 */
+	public function list_charges( array $query = array() ) {
+		return $this->request( 'GET', '/transparents/list?' . http_build_query( $query ) );
+	}
+
+	/**
 	 * Current status of a Pix charge. Requires the TRANSPARENT:READ permission.
 	 *
 	 * @param string $charge_id Charge ID (pix_char_...).

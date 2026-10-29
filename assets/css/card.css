@@ -1,0 +1,20 @@
+.abacatepay-card__form {
+	min-height: 120px;
+	margin-bottom: 1em;
+}
+
+.abacatepay-card__field label {
+	display: block;
+	margin-bottom: 0.25em;
+}
+
+.abacatepay-card__field input,
+.abacatepay-card__field select {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.abacatepay-card__error {
+	margin: 0.75em 0 0;
+	color: #b32d2e;
+}
