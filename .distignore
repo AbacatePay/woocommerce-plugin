@@ -1,0 +1,39 @@
+# Development files
+.git
+.gitignore
+.gitattributes
+.github
+.claude
+.wp-env.json
+.wp-env.override.json
+.distignore
+.editorconfig
+
+# Package managers
+node_modules
+package.json
+
+# Scripts
+scripts
+*.sh
+
+# IDE
+.idea
+.vscode
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation (development)
+README.md
+CHANGELOG.md
+
+# Build output
+dist
+
+# Other
+*.log
+*.zip
+*.po~
+*.pot~

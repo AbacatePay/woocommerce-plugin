@@ -1,0 +1,59 @@
+name: Tag Release
+
+# Publishes a release to the WordPress.org plugin directory (SVN trunk + tags/<version>).
+# Skipped while the SVN_USERNAME and SVN_PASSWORD secrets are not set. SVN_REPO_URL is optional.
+on:
+  release:
+    types:
+      - published
+  workflow_call:
+    inputs:
+      tag:
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to publish (e.g. v1.2.3)'
+        required: true
+
+concurrency:
+  group: wordpress-org
+  cancel-in-progress: false
+
+jobs:
+  svn:
+    runs-on: ubuntu-latest
+    env:
+      SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+      SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+      SVN_REPO_URL: ${{ secrets.SVN_REPO_URL }}
+      TAG: ${{ inputs.tag || github.event.release.tag_name }}
+    steps:
+      - name: Check credentials
+        id: credentials
+        run: |
+          if [ -z "$SVN_USERNAME" ] || [ -z "$SVN_PASSWORD" ]; then
+            echo "::notice::SVN_USERNAME/SVN_PASSWORD are not set, skipping the WordPress.org deploy."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.credentials.outputs.skip != 'true'
+        with:
+          ref: ${{ env.TAG }}
+
+      - name: Install Subversion
+        if: steps.credentials.outputs.skip != 'true'
+        run: sudo apt-get update -q && sudo apt-get install -yq subversion
+
+      - name: Build zip
+        if: steps.credentials.outputs.skip != 'true'
+        id: pack
+        run: echo "zip=$(./pack.sh)" >> "$GITHUB_OUTPUT"
+
+      - name: Publish to WordPress.org
+        if: steps.credentials.outputs.skip != 'true'
+        run: scripts/svn-release.sh "$ZIP"
+        env:
+          ZIP: ${{ steps.pack.outputs.zip }}
