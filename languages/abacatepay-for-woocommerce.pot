@@ -1,0 +1,425 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the AbacatePay for WooCommerce package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: AbacatePay for WooCommerce 1.0.0\n"
+"Report-Msgid-Bugs-To: ajuda@abacatepay.com\n"
+"POT-Creation-Date: 2026-10-29 16:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: includes/class-abacatepay-wc-api.php:121
+msgid "Could not connect to AbacatePay."
+msgstr ""
+
+#. translators: %d: HTTP status code
+#: includes/class-abacatepay-wc-api.php:142
+#, php-format
+msgid "Unexpected response from AbacatePay (HTTP %d)."
+msgstr ""
+
+#: includes/class-abacatepay-wc-order-details.php:234
+#: includes/class-abacatepay-wc-pix-gateway.php:50
+msgid "AbacatePay Pix"
+msgstr ""
+
+#: includes/class-abacatepay-wc-order-details.php:236
+msgid "Charge ID:"
+msgstr ""
+
+#: includes/class-abacatepay-wc-order-details.php:239
+msgid "Dev mode"
+msgstr ""
+
+#: includes/class-abacatepay-wc-order-details.php:242
+msgid "Expires:"
+msgstr ""
+
+#: includes/class-abacatepay-wc-order-details.php:246
+#: templates/pix-instructions.php:29
+msgid "View receipt"
+msgstr ""
+
+#: includes/class-abacatepay-wc-order-details.php:275
+msgid "Check Pix payment status on AbacatePay"
+msgstr ""
+
+#: includes/class-abacatepay-wc-order-details.php:278
+msgid "Simulate Pix payment (Dev mode)"
+msgstr ""
+
+#. translators: %s: error message
+#: includes/class-abacatepay-wc-order-details.php:295
+#, php-format
+msgid "Could not check the Pix status: %s"
+msgstr ""
+
+#. translators: %s: AbacatePay charge status, e.g. PENDING or PAID
+#: includes/class-abacatepay-wc-order-details.php:298
+#, php-format
+msgid "Pix status checked on AbacatePay: %s"
+msgstr ""
+
+#. translators: %s: error message
+#: includes/class-abacatepay-wc-order-details.php:319
+#, php-format
+msgid "Could not simulate the payment: %s"
+msgstr ""
+
+#: includes/class-abacatepay-wc-order-details.php:324
+msgid "Pix payment simulated in AbacatePay Dev mode."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-blocks-integration.php:65
+#: includes/class-abacatepay-wc-pix-gateway.php:81
+msgid "Pix"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:51
+msgid ""
+"Accept Pix through AbacatePay. The QR code is shown right after checkout and "
+"the order is confirmed automatically once paid."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:71
+msgid "Enable/Disable"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:73
+msgid "Enable Pix"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:77
+msgid "Title"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:79
+msgid "Payment method name shown to the customer at checkout."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:84
+msgid "Description"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:86
+msgid "Text shown to the customer at checkout."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:88
+msgid ""
+"Pay instantly with Pix. The QR code will be shown after you place the order."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:91
+msgid "AbacatePay integration"
+msgstr ""
+
+#. translators: 1: list of permissions, 2: link to the documentation
+#: includes/class-abacatepay-wc-pix-gateway.php:95
+#, php-format
+msgid ""
+"Create an API key in the AbacatePay dashboard (Integration) with the %1$s "
+"permissions. A Dev mode key creates test charges; a production key creates "
+"real ones. %2$s"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:97
+msgid "Learn more"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:101
+msgid "API key"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:106
+msgid "Webhook"
+msgstr ""
+
+#. translators: 1: webhook URL, 2: list of events
+#: includes/class-abacatepay-wc-pix-gateway.php:110
+#, php-format
+msgid ""
+"In the AbacatePay dashboard, create a webhook with the URL %1$s, the secret "
+"below and the events %2$s. Without it, orders are only confirmed when the "
+"customer is on the order page or after the Pix expires."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:116
+msgid "Webhook secret"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:118
+msgid ""
+"Generated automatically. Use the same value when creating the webhook. "
+"Webhooks with a different secret are rejected."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:122
+msgid "Payment"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:126
+msgid "Pix expiration (minutes)"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:128
+msgid "How long the QR code can be paid. Use 0 for the AbacatePay default."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:136
+msgid "Status while awaiting payment"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:139
+msgid ""
+"\"On hold\" reserves stock and emails the QR code to the customer. \"Pending "
+"payment\" does neither."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:142
+msgctxt "Order status"
+msgid "On hold"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:143
+msgctxt "Order status"
+msgid "Pending payment"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:147
+msgid "Status after payment"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:154
+msgid "Expired Pix"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:156
+msgid "Cancel the order (and restore stock) when the Pix expires unpaid"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:160
+msgid "Debug log"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:162
+msgid "Log API requests and responses"
+msgstr ""
+
+#. translators: %s: link to the WooCommerce logs screen
+#: includes/class-abacatepay-wc-pix-gateway.php:166
+#, php-format
+msgid ""
+"Logs include customer data. Enable only while troubleshooting. View them in "
+"%s."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:167
+msgid "WooCommerce > Status > Logs"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:180
+msgid ""
+"WooCommerce default (Processing, or Completed for virtual/downloadable "
+"orders)"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:204
+msgid "Pix only works when the store currency is Brazilian real (BRL)."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:210
+msgid ""
+"Pix is enabled but will not be offered at checkout until you set an API key."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:263
+msgid "AbacatePay Pix charge created. Awaiting payment."
+msgstr ""
+
+#. translators: %s: error message returned by AbacatePay
+#: includes/class-abacatepay-wc-pix-gateway.php:301
+#, php-format
+msgid "Could not create the Pix: %s"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:304
+msgid ""
+"Pix is temporarily unavailable. Please try again or choose another payment "
+"method."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:320
+msgid "Pix payments must be at least R$ 1.00."
+msgstr ""
+
+#. translators: 1: store name, 2: order number
+#: includes/class-abacatepay-wc-pix-gateway.php:332
+#, php-format
+msgid "%1$s - Order #%2$s"
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:361
+msgid "Invalid response from AbacatePay."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:500
+msgid "Pix payment confirmed by AbacatePay."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:533
+msgid "Pix expired without payment."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:548
+#: includes/class-abacatepay-wc-pix-gateway.php:647
+msgid "This order has no Pix charge."
+msgstr ""
+
+#. translators: %s: amount paid
+#: includes/class-abacatepay-wc-pix-gateway.php:655
+#, php-format
+msgid "AbacatePay only supports refunding the full amount paid (%s)."
+msgstr ""
+
+#: includes/class-abacatepay-wc-pix-gateway.php:668
+#: includes/class-abacatepay-wc-webhook.php:188
+msgid "Pix refunded through AbacatePay."
+msgstr ""
+
+#: includes/class-abacatepay-wc-webhook.php:110
+#: includes/class-abacatepay-wc-webhook.php:217
+msgid "Dispute lost."
+msgstr ""
+
+#. translators: 1: amount paid, 2: order total
+#: includes/class-abacatepay-wc-webhook.php:142
+#, php-format
+msgid ""
+"Pix of %1$s received, but the order total is %2$s. Check the payment before "
+"shipping."
+msgstr ""
+
+#: includes/class-abacatepay-wc-webhook.php:176
+msgid "Refunded through AbacatePay."
+msgstr ""
+
+#. translators: %s: dispute reason
+#: includes/class-abacatepay-wc-webhook.php:205
+#, php-format
+msgid "Pix payment disputed by the payer: %s"
+msgstr ""
+
+#: includes/class-abacatepay-wc-webhook.php:208
+msgid "Pix dispute closed in favor of the store."
+msgstr ""
+
+#: includes/class-abacatepay-wc.php:132
+msgid "Settings"
+msgstr ""
+
+#: includes/class-abacatepay-wc.php:143
+msgid ""
+"AbacatePay for WooCommerce requires WooCommerce to be installed and active."
+msgstr ""
+
+#: templates/emails/pix-instructions.php:19
+#: templates/emails/plain/pix-instructions.php:18
+#: templates/pix-instructions.php:53
+msgid "Pay with Pix"
+msgstr ""
+
+#: templates/emails/pix-instructions.php:21
+msgid ""
+"Scan the QR code with your bank app or use the Pix Copy and Paste code below."
+msgstr ""
+
+#: templates/emails/pix-instructions.php:24 templates/pix-instructions.php:71
+msgid "Pix QR code"
+msgstr ""
+
+#: templates/emails/pix-instructions.php:27 templates/pix-instructions.php:75
+msgid "Pix Copy and Paste"
+msgstr ""
+
+#. translators: %s: expiration date and time
+#: templates/emails/pix-instructions.php:35
+#: templates/emails/plain/pix-instructions.php:26
+#: templates/pix-instructions.php:88
+#, php-format
+msgid "Pay by %s."
+msgstr ""
+
+#: templates/emails/pix-instructions.php:43
+msgid "View your order"
+msgstr ""
+
+#: templates/emails/plain/pix-instructions.php:20
+msgid "Paste this code in your bank app (Pix Copy and Paste):"
+msgstr ""
+
+#: templates/pix-instructions.php:26
+msgid "Pix payment confirmed"
+msgstr ""
+
+#: templates/pix-instructions.php:27
+msgid "Thank you! We received your payment and your order is being processed."
+msgstr ""
+
+#: templates/pix-instructions.php:36
+msgid "This Pix has expired"
+msgstr ""
+
+#: templates/pix-instructions.php:38
+msgid "Generate a new Pix"
+msgstr ""
+
+#: templates/pix-instructions.php:40
+msgid ""
+"The payment time is over. Please place a new order or contact the store."
+msgstr ""
+
+#: templates/pix-instructions.php:50
+msgid "Payment confirmed! Updating the page…"
+msgstr ""
+
+#: templates/pix-instructions.php:51
+msgid "This Pix has expired. Reload the page to see your options."
+msgstr ""
+
+#: templates/pix-instructions.php:56
+msgid "Test charge (AbacatePay Dev mode): no real money will be charged."
+msgstr ""
+
+#: templates/pix-instructions.php:60
+msgid "Open your bank app and choose to pay with Pix."
+msgstr ""
+
+#: templates/pix-instructions.php:61
+msgid "Scan the QR code or paste the Pix code below."
+msgstr ""
+
+#: templates/pix-instructions.php:62
+msgid "Confirm the payment. This page updates automatically."
+msgstr ""
+
+#: templates/pix-instructions.php:80
+msgid "Copied!"
+msgstr ""
+
+#: templates/pix-instructions.php:81
+msgid "Copy Pix code"
+msgstr ""
+
+#: templates/pix-instructions.php:98
+msgid "Waiting for payment…"
+msgstr ""

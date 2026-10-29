@@ -1,0 +1,18 @@
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Dependencies
+node_modules/
+vendor/
+
+# Local WordPress environment overrides
+.wp-env.override.json
+
+# Logs and build artifacts
+*.log
+*.zip
+dist/

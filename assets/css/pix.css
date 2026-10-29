@@ -1,0 +1,75 @@
+.abacatepay-pix {
+	margin: 0 0 2em;
+	padding: 1.5em;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+}
+
+.abacatepay-pix h2 {
+	margin-top: 0;
+}
+
+.abacatepay-pix__steps {
+	margin: 0 0 1.5em 1.25em;
+}
+
+.abacatepay-pix__body {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.5em;
+	align-items: flex-start;
+}
+
+.abacatepay-pix__qr-code {
+	flex: 0 0 auto;
+	width: 240px;
+	max-width: 100%;
+	height: auto;
+	background: #fff;
+	border-radius: 4px;
+}
+
+.abacatepay-pix__copy {
+	flex: 1 1 260px;
+	min-width: 0;
+}
+
+.abacatepay-pix__copy label {
+	display: block;
+	margin-bottom: 0.5em;
+	font-weight: 600;
+}
+
+.abacatepay-pix__code {
+	box-sizing: border-box;
+	width: 100%;
+	margin-bottom: 0.75em;
+	font-family: monospace;
+	font-size: 0.85em;
+	word-break: break-all;
+	resize: none;
+}
+
+.abacatepay-pix__expires {
+	margin: 1em 0 0;
+}
+
+.abacatepay-pix__countdown {
+	font-variant-numeric: tabular-nums;
+}
+
+.abacatepay-pix__status {
+	margin: 1.5em 0 0;
+	font-weight: 600;
+}
+
+.abacatepay-pix__dev-mode {
+	padding: 0.5em 0.75em;
+	background: #fff8e5;
+	border-left: 4px solid #dba617;
+	color: #1e1e1e;
+}
+
+.abacatepay-pix__result--paid h2 {
+	color: #0a7c2f;
+}
