@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AbacatePay for WooCommerce 1.0.0\n"
 "Report-Msgid-Bugs-To: ajuda@abacatepay.com\n"
-"POT-Creation-Date: 2026-10-29 17:45+0000\n"
+"POT-Creation-Date: 2026-10-29 17:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,6 +36,7 @@ msgid ""
 msgstr ""
 
 #: includes/abstract-abacatepay-wc-gateway.php:103
+#: includes/class-abacatepay-wc-boleto-gateway.php:91
 #: includes/class-abacatepay-wc-card-gateway.php:119
 msgid "AbacatePay Pix settings"
 msgstr ""
@@ -63,6 +64,7 @@ msgid "Payment confirmed by AbacatePay."
 msgstr ""
 
 #: includes/abstract-abacatepay-wc-gateway.php:257
+#: includes/class-abacatepay-wc-boleto-gateway.php:486
 #: includes/class-abacatepay-wc-card-gateway.php:669
 #: includes/class-abacatepay-wc-pix-gateway.php:391
 msgid "This order has no AbacatePay charge."
@@ -104,6 +106,7 @@ msgid "Dispute closed in favor of the store."
 msgstr ""
 
 #: includes/abstract-abacatepay-wc-gateway.php:453
+#: includes/class-abacatepay-wc-boleto-gateway.php:398
 msgid "name"
 msgstr ""
 
@@ -112,6 +115,7 @@ msgid "email"
 msgstr ""
 
 #: includes/abstract-abacatepay-wc-gateway.php:455
+#: includes/class-abacatepay-wc-boleto-gateway.php:402
 msgid "CPF/CNPJ"
 msgstr ""
 
@@ -119,14 +123,239 @@ msgstr ""
 msgid "phone"
 msgstr ""
 
-#: includes/class-abacatepay-wc-api.php:158
+#: includes/class-abacatepay-wc-api.php:175
 msgid "Could not connect to AbacatePay."
 msgstr ""
 
 #. translators: %d: HTTP status code
-#: includes/class-abacatepay-wc-api.php:179
+#: includes/class-abacatepay-wc-api.php:196
 #, php-format
 msgid "Unexpected response from AbacatePay (HTTP %d)."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-blocks-integration.php:65
+#: includes/class-abacatepay-wc-boleto-gateway.php:99
+msgid "Boleto"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-details.php:255
+msgid "Check boleto payment status on AbacatePay"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-details.php:258
+msgid "Simulate boleto payment (Dev mode)"
+msgstr ""
+
+#. translators: %s: error message
+#: includes/class-abacatepay-wc-boleto-details.php:275
+#, php-format
+msgid "Could not check the boleto status: %s"
+msgstr ""
+
+#. translators: %s: AbacatePay charge status, e.g. PENDING or PAID
+#: includes/class-abacatepay-wc-boleto-details.php:278
+#, php-format
+msgid "Boleto status checked on AbacatePay: %s"
+msgstr ""
+
+#. translators: %s: error message
+#: includes/class-abacatepay-wc-boleto-details.php:298
+#: includes/class-abacatepay-wc-order-details.php:320
+#, php-format
+msgid "Could not simulate the payment: %s"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-details.php:303
+msgid "Boleto payment simulated in AbacatePay Dev mode."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:63
+msgid "AbacatePay Boleto"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:64
+msgid ""
+"Issue boletos through AbacatePay. The customer can also pay the same charge "
+"with Pix, and the order is confirmed automatically once paid."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:84
+#: includes/class-abacatepay-wc-card-gateway.php:94
+#: includes/class-abacatepay-wc-pix-gateway.php:63
+msgid "Enable/Disable"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:86
+msgid "Enable boleto"
+msgstr ""
+
+#. translators: %s: link to the settings screen with the API key
+#: includes/class-abacatepay-wc-boleto-gateway.php:90
+#, php-format
+msgid "The API key and the webhook are configured in %s."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:95
+#: includes/class-abacatepay-wc-card-gateway.php:100
+#: includes/class-abacatepay-wc-pix-gateway.php:69
+msgid "Title"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:97
+#: includes/class-abacatepay-wc-card-gateway.php:102
+#: includes/class-abacatepay-wc-pix-gateway.php:71
+msgid "Payment method name shown to the customer at checkout."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:102
+#: includes/class-abacatepay-wc-card-gateway.php:107
+#: includes/class-abacatepay-wc-pix-gateway.php:76
+msgid "Description"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:104
+#: includes/class-abacatepay-wc-card-gateway.php:109
+#: includes/class-abacatepay-wc-pix-gateway.php:78
+msgid "Text shown to the customer at checkout."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:106
+msgid ""
+"Pay with a boleto or with Pix. They will be shown after you place the order."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:109
+#: includes/class-abacatepay-wc-pix-gateway.php:114
+msgid "Payment"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:113
+msgid "Days until due date"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:115
+msgid ""
+"Calendar days after the order. Use 0 for the AbacatePay default (3 business "
+"days). Maximum 365."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:124
+msgid "Late interest (% per month)"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:126
+msgid "Charged pro rata per day after the due date. Use 0 for no interest."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:134
+msgid "Late fine"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:139
+msgid "No fine"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:140
+msgid "Percentage of the boleto amount"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:141
+msgid "Fixed amount (R$)"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:145
+msgid "Late fine value"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:147
+msgid ""
+"Percentage (e.g. 2 for 2%) or amount in reais (e.g. 10 for R$ 10.00), "
+"charged once after the due date."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:155
+#: includes/class-abacatepay-wc-pix-gateway.php:135
+msgid "Status while awaiting payment"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:158
+msgid ""
+"\"On hold\" reserves stock and emails the boleto to the customer. \"Pending "
+"payment\" does neither."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:161
+#: includes/class-abacatepay-wc-pix-gateway.php:141
+msgctxt "Order status"
+msgid "On hold"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:162
+#: includes/class-abacatepay-wc-pix-gateway.php:142
+msgctxt "Order status"
+msgid "Pending payment"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:166
+#: includes/class-abacatepay-wc-card-gateway.php:138
+#: includes/class-abacatepay-wc-pix-gateway.php:146
+msgid "Status after payment"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:173
+msgid "Expired boleto"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:175
+msgid ""
+"Cancel the order (and restore stock) when AbacatePay reports the boleto as "
+"expired"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:176
+msgid ""
+"Checked daily after the due date, since boletos take up to 3 business days "
+"to clear. With interest or a fine the boleto may stay payable after the due "
+"date."
+msgstr ""
+
+#. translators: %s: comma-separated list of fields, e.g. "name, CPF/CNPJ"
+#: includes/class-abacatepay-wc-boleto-gateway.php:194
+#, php-format
+msgid "To pay with boleto, please fill in: %s."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:210
+msgid "AbacatePay boleto issued. Awaiting payment."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:242
+msgid "Boleto payments must be at least R$ 1.00."
+msgstr ""
+
+#. translators: 1: store name, 2: order number
+#: includes/class-abacatepay-wc-boleto-gateway.php:254
+#: includes/class-abacatepay-wc-pix-gateway.php:258
+#, php-format
+msgid "%1$s - Order #%2$s"
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:277
+#: includes/class-abacatepay-wc-pix-gateway.php:286
+msgid "Invalid response from AbacatePay."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:414
+msgid "Boleto payment confirmed by AbacatePay."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:453
+msgid ""
+"Boletos can't be refunded through AbacatePay. Refund the customer manually."
+msgstr ""
+
+#: includes/class-abacatepay-wc-boleto-gateway.php:471
+msgid "Boleto expired without payment."
 msgstr ""
 
 #: includes/class-abacatepay-wc-card-blocks-integration.php:67
@@ -168,33 +397,8 @@ msgstr ""
 msgid "Up to %dx"
 msgstr ""
 
-#: includes/class-abacatepay-wc-card-gateway.php:94
-#: includes/class-abacatepay-wc-pix-gateway.php:63
-msgid "Enable/Disable"
-msgstr ""
-
 #: includes/class-abacatepay-wc-card-gateway.php:96
 msgid "Enable credit card"
-msgstr ""
-
-#: includes/class-abacatepay-wc-card-gateway.php:100
-#: includes/class-abacatepay-wc-pix-gateway.php:69
-msgid "Title"
-msgstr ""
-
-#: includes/class-abacatepay-wc-card-gateway.php:102
-#: includes/class-abacatepay-wc-pix-gateway.php:71
-msgid "Payment method name shown to the customer at checkout."
-msgstr ""
-
-#: includes/class-abacatepay-wc-card-gateway.php:107
-#: includes/class-abacatepay-wc-pix-gateway.php:76
-msgid "Description"
-msgstr ""
-
-#: includes/class-abacatepay-wc-card-gateway.php:109
-#: includes/class-abacatepay-wc-pix-gateway.php:78
-msgid "Text shown to the customer at checkout."
 msgstr ""
 
 #: includes/class-abacatepay-wc-card-gateway.php:111
@@ -235,11 +439,6 @@ msgstr ""
 msgid ""
 "Interest-free for the customer. Each installment must be at least R$ 10.00, "
 "so fewer options are offered for small orders."
-msgstr ""
-
-#: includes/class-abacatepay-wc-card-gateway.php:138
-#: includes/class-abacatepay-wc-pix-gateway.php:146
-msgid "Status after payment"
 msgstr ""
 
 #: includes/class-abacatepay-wc-card-gateway.php:153
@@ -380,7 +579,7 @@ msgid "Expires:"
 msgstr ""
 
 #: includes/class-abacatepay-wc-order-details.php:247
-#: templates/pix-instructions.php:29
+#: templates/boleto-instructions.php:32 templates/pix-instructions.php:29
 msgid "View receipt"
 msgstr ""
 
@@ -402,12 +601,6 @@ msgstr ""
 #: includes/class-abacatepay-wc-order-details.php:299
 #, php-format
 msgid "Pix status checked on AbacatePay: %s"
-msgstr ""
-
-#. translators: %s: error message
-#: includes/class-abacatepay-wc-order-details.php:320
-#, php-format
-msgid "Could not simulate the payment: %s"
 msgstr ""
 
 #: includes/class-abacatepay-wc-order-details.php:325
@@ -482,10 +675,6 @@ msgid ""
 "Webhooks with a different secret are rejected."
 msgstr ""
 
-#: includes/class-abacatepay-wc-pix-gateway.php:114
-msgid "Payment"
-msgstr ""
-
 #: includes/class-abacatepay-wc-pix-gateway.php:118
 msgid "Pix expiration (minutes)"
 msgstr ""
@@ -509,24 +698,10 @@ msgid ""
 "CPF/CNPJ comes from the \"Brazilian Market on WooCommerce\" plugin."
 msgstr ""
 
-#: includes/class-abacatepay-wc-pix-gateway.php:135
-msgid "Status while awaiting payment"
-msgstr ""
-
 #: includes/class-abacatepay-wc-pix-gateway.php:138
 msgid ""
 "\"On hold\" reserves stock and emails the QR code to the customer. \"Pending "
 "payment\" does neither."
-msgstr ""
-
-#: includes/class-abacatepay-wc-pix-gateway.php:141
-msgctxt "Order status"
-msgid "On hold"
-msgstr ""
-
-#: includes/class-abacatepay-wc-pix-gateway.php:142
-msgctxt "Order status"
-msgid "Pending payment"
 msgstr ""
 
 #: includes/class-abacatepay-wc-pix-gateway.php:153
@@ -571,16 +746,6 @@ msgstr ""
 msgid "Pix payments must be at least R$ 1.00."
 msgstr ""
 
-#. translators: 1: store name, 2: order number
-#: includes/class-abacatepay-wc-pix-gateway.php:258
-#, php-format
-msgid "%1$s - Order #%2$s"
-msgstr ""
-
-#: includes/class-abacatepay-wc-pix-gateway.php:286
-msgid "Invalid response from AbacatePay."
-msgstr ""
-
 #: includes/class-abacatepay-wc-pix-gateway.php:341
 msgid "Pix payment confirmed by AbacatePay."
 msgstr ""
@@ -589,13 +754,106 @@ msgstr ""
 msgid "Pix expired without payment."
 msgstr ""
 
-#: includes/class-abacatepay-wc.php:162
+#: includes/class-abacatepay-wc.php:168
 msgid "Settings"
 msgstr ""
 
-#: includes/class-abacatepay-wc.php:173
+#: includes/class-abacatepay-wc.php:179
 msgid ""
 "AbacatePay for WooCommerce requires WooCommerce to be installed and active."
+msgstr ""
+
+#: templates/boleto-instructions.php:29
+msgid "Payment confirmed"
+msgstr ""
+
+#: templates/boleto-instructions.php:30 templates/pix-instructions.php:27
+msgid "Thank you! We received your payment and your order is being processed."
+msgstr ""
+
+#: templates/boleto-instructions.php:39
+msgid "This boleto has expired"
+msgstr ""
+
+#: templates/boleto-instructions.php:40 templates/pix-instructions.php:40
+msgid ""
+"The payment time is over. Please place a new order or contact the store."
+msgstr ""
+
+#: templates/boleto-instructions.php:48 templates/pix-instructions.php:50
+msgid "Payment confirmed! Updating the page…"
+msgstr ""
+
+#: templates/boleto-instructions.php:50
+#: templates/emails/boleto-instructions.php:21
+#: templates/emails/plain/boleto-instructions.php:18
+msgid "Pay with boleto"
+msgstr ""
+
+#: templates/boleto-instructions.php:53 templates/pix-instructions.php:56
+msgid "Test charge (AbacatePay Dev mode): no real money will be charged."
+msgstr ""
+
+#. translators: %s: due date
+#: templates/boleto-instructions.php:61
+#: templates/emails/boleto-instructions.php:28
+#: templates/emails/plain/boleto-instructions.php:22
+#, php-format
+msgid "Due date: %s"
+msgstr ""
+
+#: templates/boleto-instructions.php:66
+msgid "Interest and/or a fine apply after the due date."
+msgstr ""
+
+#: templates/boleto-instructions.php:72
+#: templates/emails/boleto-instructions.php:35
+#: templates/emails/plain/boleto-instructions.php:25
+msgid "Boleto number (linha digitável)"
+msgstr ""
+
+#: templates/boleto-instructions.php:79 templates/boleto-instructions.php:108
+#: templates/pix-instructions.php:80
+msgid "Copied!"
+msgstr ""
+
+#: templates/boleto-instructions.php:80
+msgid "Copy boleto number"
+msgstr ""
+
+#: templates/boleto-instructions.php:82
+#: templates/emails/boleto-instructions.php:39
+#: templates/emails/plain/boleto-instructions.php:29
+msgid "View and print boleto"
+msgstr ""
+
+#: templates/boleto-instructions.php:85
+msgid "Boleto payments take up to 3 business days to be confirmed."
+msgstr ""
+
+#: templates/boleto-instructions.php:90
+#: templates/emails/boleto-instructions.php:43
+msgid "Prefer Pix? Pay now and get instant confirmation"
+msgstr ""
+
+#: templates/boleto-instructions.php:98
+#: templates/emails/boleto-instructions.php:47
+#: templates/emails/pix-instructions.php:24 templates/pix-instructions.php:71
+msgid "Pix QR code"
+msgstr ""
+
+#: templates/boleto-instructions.php:102
+#: templates/emails/boleto-instructions.php:51
+#: templates/emails/pix-instructions.php:27 templates/pix-instructions.php:75
+msgid "Pix Copy and Paste"
+msgstr ""
+
+#: templates/boleto-instructions.php:109 templates/pix-instructions.php:81
+msgid "Copy Pix code"
+msgstr ""
+
+#: templates/boleto-instructions.php:115 templates/pix-instructions.php:98
+msgid "Waiting for payment…"
 msgstr ""
 
 #: templates/emails/pix-instructions.php:19
@@ -607,14 +865,6 @@ msgstr ""
 #: templates/emails/pix-instructions.php:21
 msgid ""
 "Scan the QR code with your bank app or use the Pix Copy and Paste code below."
-msgstr ""
-
-#: templates/emails/pix-instructions.php:24 templates/pix-instructions.php:71
-msgid "Pix QR code"
-msgstr ""
-
-#: templates/emails/pix-instructions.php:27 templates/pix-instructions.php:75
-msgid "Pix Copy and Paste"
 msgstr ""
 
 #. translators: %s: expiration date and time
@@ -629,16 +879,13 @@ msgstr ""
 msgid "View your order"
 msgstr ""
 
+#: templates/emails/plain/boleto-instructions.php:33
 #: templates/emails/plain/pix-instructions.php:20
 msgid "Paste this code in your bank app (Pix Copy and Paste):"
 msgstr ""
 
 #: templates/pix-instructions.php:26
 msgid "Pix payment confirmed"
-msgstr ""
-
-#: templates/pix-instructions.php:27
-msgid "Thank you! We received your payment and your order is being processed."
 msgstr ""
 
 #: templates/pix-instructions.php:36
@@ -649,21 +896,8 @@ msgstr ""
 msgid "Generate a new Pix"
 msgstr ""
 
-#: templates/pix-instructions.php:40
-msgid ""
-"The payment time is over. Please place a new order or contact the store."
-msgstr ""
-
-#: templates/pix-instructions.php:50
-msgid "Payment confirmed! Updating the page…"
-msgstr ""
-
 #: templates/pix-instructions.php:51
 msgid "This Pix has expired. Reload the page to see your options."
-msgstr ""
-
-#: templates/pix-instructions.php:56
-msgid "Test charge (AbacatePay Dev mode): no real money will be charged."
 msgstr ""
 
 #: templates/pix-instructions.php:60
@@ -676,16 +910,4 @@ msgstr ""
 
 #: templates/pix-instructions.php:62
 msgid "Confirm the payment. This page updates automatically."
-msgstr ""
-
-#: templates/pix-instructions.php:80
-msgid "Copied!"
-msgstr ""
-
-#: templates/pix-instructions.php:81
-msgid "Copy Pix code"
-msgstr ""
-
-#: templates/pix-instructions.php:98
-msgid "Waiting for payment…"
 msgstr ""

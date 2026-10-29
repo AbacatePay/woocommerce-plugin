@@ -69,9 +69,26 @@ class AbacatePay_WC_Api {
 	}
 
 	/**
+	 * Issues a boleto (with an alternative Pix for the same charge). Requires the TRANSPARENT:CREATE permission.
+	 *
+	 * @param array $data Charge data (amount in cents, customer with name and taxId, dueDate, interest, fine...).
+	 * @return array|WP_Error The charge (id, status, barCode, url, brCode, brCodeBase64, expiresAt, devMode...).
+	 */
+	public function create_boleto_charge( array $data ) {
+		return $this->request(
+			'POST',
+			'/transparents/create',
+			array(
+				'method' => 'BOLETO',
+				'data'   => $data,
+			)
+		);
+	}
+
+	/**
 	 * Full charge, for any method. Card charges must use this instead of check_charge(). Requires TRANSPARENT:READ.
 	 *
-	 * @param string $charge_id Charge ID (card_..., pix_char_...).
+	 * @param string $charge_id Charge ID (bole_..., card_..., pix_char_...).
 	 * @return array|WP_Error
 	 */
 	public function get_charge( $charge_id ) {

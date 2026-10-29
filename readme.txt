@@ -25,6 +25,7 @@ O cliente finaliza a compra e vê o QR Code e o código Pix Copia e Cola na pág
 * Cartão de crédito em até 12x, com o formulário seguro da AbacatePay (3DS incluído). Os dados do cartão nunca passam pela loja.
 * Compatível com o checkout em blocos e com HPOS.
 * Envia CPF/CNPJ do cliente quando a loja usa o plugin "Brazilian Market on WooCommerce".
+* Boleto: linha digitável, link para imprimir e Pix alternativo na mesma cobrança, com vencimento, juros e multa configuráveis.
 
 == Installation ==
 
@@ -53,3 +54,4 @@ Sim. Copie os arquivos da pasta `templates/` para `seu-tema/abacatepay-for-wooco
 
 = 1.0.0 =
 * Primeira versão: Pix via checkout transparente da AbacatePay.
+* Boleto via checkout transparente da AbacatePay.

@@ -53,6 +53,7 @@ final class AbacatePay_WC {
 
 		AbacatePay_WC_Webhook::init();
 		AbacatePay_WC_Order_Details::init();
+		AbacatePay_WC_Boleto_Details::init();
 	}
 
 	/**
@@ -64,8 +65,10 @@ final class AbacatePay_WC {
 		require_once ABACATEPAY_WC_PATH . 'includes/abstract-abacatepay-wc-gateway.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-pix-gateway.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-card-gateway.php';
+		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-boleto-gateway.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-webhook.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-order-details.php';
+		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-boleto-details.php';
 	}
 
 	/**
@@ -84,6 +87,7 @@ final class AbacatePay_WC {
 	public function register_gateways( $gateways ) {
 		$gateways[] = 'AbacatePay_WC_Pix_Gateway';
 		$gateways[] = 'AbacatePay_WC_Card_Gateway';
+		$gateways[] = 'AbacatePay_WC_Boleto_Gateway';
 
 		return $gateways;
 	}
@@ -96,9 +100,11 @@ final class AbacatePay_WC {
 	public function register_block_integrations( $registry ) {
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-pix-blocks-integration.php';
 		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-card-blocks-integration.php';
+		require_once ABACATEPAY_WC_PATH . 'includes/class-abacatepay-wc-boleto-blocks-integration.php';
 
 		$registry->register( new AbacatePay_WC_Pix_Blocks_Integration() );
 		$registry->register( new AbacatePay_WC_Card_Blocks_Integration() );
+		$registry->register( new AbacatePay_WC_Boleto_Blocks_Integration() );
 	}
 
 	/**

@@ -1,0 +1,80 @@
+.abacatepay-boleto {
+	margin: 0 0 2em;
+	padding: 1.5em;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+}
+
+.abacatepay-boleto h2 {
+	margin-top: 0;
+}
+
+.abacatepay-boleto__copy label {
+	display: block;
+	margin-bottom: 0.5em;
+	font-weight: 600;
+}
+
+.abacatepay-boleto__code {
+	box-sizing: border-box;
+	width: 100%;
+	margin-bottom: 0.75em;
+	font-family: monospace;
+	font-size: 0.9em;
+	word-break: break-all;
+	resize: none;
+}
+
+.abacatepay-boleto__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5em;
+}
+
+.abacatepay-boleto__note {
+	font-size: 0.9em;
+	opacity: 0.8;
+}
+
+.abacatepay-boleto__pix {
+	margin-top: 1.5em;
+	padding-top: 1.5em;
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.abacatepay-boleto__pix-body {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.5em;
+	align-items: flex-start;
+}
+
+.abacatepay-boleto__pix-body .abacatepay-boleto__copy {
+	flex: 1 1 260px;
+	min-width: 0;
+}
+
+.abacatepay-boleto__qr-code {
+	flex: 0 0 auto;
+	width: 200px;
+	max-width: 100%;
+	height: auto;
+	background: #fff;
+	border-radius: 4px;
+}
+
+.abacatepay-boleto__status {
+	margin: 1.5em 0 0;
+	font-weight: 600;
+}
+
+.abacatepay-boleto__dev-mode {
+	padding: 0.5em 0.75em;
+	background: #fff8e5;
+	border-left: 4px solid #dba617;
+	color: #1e1e1e;
+}
+
+.abacatepay-boleto__result--paid h2 {
+	color: #0a7c2f;
+}
