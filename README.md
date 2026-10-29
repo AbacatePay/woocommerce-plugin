@@ -40,6 +40,14 @@ Além disso, o pedido é localizado pelo `metadata.wcOrderId` e a cobrança do e
 
 Parcelas vão de 1x a 12x (configurável), sem juros para o cliente e com no mínimo R$ 10,00 por parcela. A chave pública e a chave de API precisam ser do mesmo ambiente.
 
+## Boleto
+
+- A cobrança é criada com `POST /v2/transparents/create` (`method: "BOLETO"`). O vencimento (`dueDate`) é calculado em dias corridos a partir do pedido, no fuso da loja. Juros (`interest`, % ao mês) e multa (`fine`, percentual ou valor fixo) são opcionais.
+- A página do pedido, "Minha conta" e o e-mail mostram a linha digitável, o link para ver e imprimir o boleto, o vencimento e o Pix alternativo que a AbacatePay gera para a mesma cobrança. A página consulta o status a cada 10 s, porque um pagamento pelo Pix alternativo confirma na hora.
+- Não existe webhook de vencimento. Um dia depois do vencimento, uma tarefa do Action Scheduler consulta `GET /v2/transparents/get` uma vez por dia: confirma o pedido se estiver pago e cancela (configurável) quando a AbacatePay informa `EXPIRED`. São até 7 consultas, ou 60 quando há juros ou multa, porque nesse caso o boleto pode ser pago com atraso.
+- CPF/CNPJ e nome são obrigatórios; e-mail e telefone vão junto quando existem.
+- A API não reembolsa boletos, então o reembolso precisa ser manual.
+
 ## Estrutura
 
 ```
@@ -54,6 +62,9 @@ includes/
   class-abacatepay-wc-pix-blocks-integration.php  Checkout em blocos
   class-abacatepay-wc-card-gateway.php    Cartão: formulário, cobrança, parcelas, consulta de cobranças sem resposta
   class-abacatepay-wc-card-blocks-integration.php  Cartão no checkout em blocos
+  class-abacatepay-wc-boleto-gateway.php  Boleto: emissão, vencimento/juros/multa, consulta agendada
+  class-abacatepay-wc-boleto-details.php  Boleto na loja e no e-mail, Pix alternativo, status, ações no admin
+  class-abacatepay-wc-boleto-blocks-integration.php  Boleto no checkout em blocos
   class-abacatepay-wc-logger.php          Logs em WooCommerce > Status > Logs
 templates/                                Templates sobrescrevíveis pelo tema
 assets/                                   JS/CSS da página do pedido e do checkout em blocos
@@ -69,6 +80,7 @@ languages/                                .pot e tradução pt_BR
 - `abacatepay_wc_card_charge_data` (filter): dados enviados em `data` na cobrança do cartão.
 - `abacatepay_wc_card_icon` (filter): ícone do cartão no checkout.
 - `abacatepay_wc_order_has_charge` (filter): se uma cobrança recebida no webhook pertence ao pedido.
+- `abacatepay_wc_boleto_charge_data` / `abacatepay_wc_boleto_icon` (filters): o mesmo, para o boleto.
 
 ## Limitações conhecidas
 
