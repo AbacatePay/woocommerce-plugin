@@ -1,7 +1,7 @@
 === AbacatePay for WooCommerce ===
 Contributors: abacatepay
 Tags: pix, boleto, credit card, payment gateway, brazil
-Requires at least: 6.3
+Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
 WC requires at least: 8.0

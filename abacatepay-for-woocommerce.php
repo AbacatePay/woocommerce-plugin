@@ -6,7 +6,7 @@
  * Version: 1.0.0
  * Author: AbacatePay
  * Author URI: https://www.abacatepay.com
- * Requires at least: 6.3
+ * Requires at least: 6.8
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
  * WC requires at least: 8.0
