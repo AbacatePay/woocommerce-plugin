@@ -770,10 +770,6 @@ msgid ""
 "The payment time is over. Please place a new order or contact the store."
 msgstr "O prazo para pagamento acabou. Faça um novo pedido ou fale com a loja."
 
-#: templates/boleto-instructions.php:48 templates/pix-instructions.php:50
-msgid "Payment confirmed! Updating the page…"
-msgstr "Pagamento confirmado! Atualizando a página…"
-
 #: templates/boleto-instructions.php:50
 #: templates/emails/boleto-instructions.php:21
 #: templates/emails/plain/boleto-instructions.php:18
@@ -898,9 +894,9 @@ msgstr "Abra o app do seu banco e escolha pagar com Pix."
 msgid "Scan the QR code or paste the Pix code below."
 msgstr "Escaneie o QR Code ou cole o código Pix abaixo."
 
-#: templates/pix-instructions.php:62
-msgid "Confirm the payment. This page updates automatically."
-msgstr "Confirme o pagamento. Esta página é atualizada automaticamente."
+#: templates/pix-instructions.php:59
+msgid "Confirm the payment. We will email you as soon as it is confirmed."
+msgstr "Confirme o pagamento. Você receberá um e-mail assim que ele for confirmado."
 
 #. Plugin header
 msgid "AbacatePay for WooCommerce"

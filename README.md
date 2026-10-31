@@ -5,12 +5,11 @@ Plugin de pagamento Pix e cartão de crédito para WooCommerce usando o [checkou
 ## Como funciona
 
 1. No checkout, o `process_payment` cria a cobrança com `POST /v2/transparents/create` (`method: "PIX"`) e guarda no pedido o ID da cobrança, o `brCode` e o QR Code.
-2. O cliente é levado para a página de "pedido recebido", que mostra o QR Code, o Pix Copia e Cola e uma contagem regressiva. A página consulta o status a cada 5 s.
+2. O cliente é levado para a página de "pedido recebido", que mostra o QR Code, o Pix Copia e Cola e uma contagem regressiva. A página não consulta o status: a confirmação vem só pelo webhook.
 3. A AbacatePay chama o webhook (`/wc-api/abacatepay_wc_webhook/`) com `transparent.completed` e o pedido passa a "Processando" (ou ao status configurado).
 
 Redes de segurança, caso o webhook não chegue:
 
-- O endpoint de status usado pela página do pedido consulta `GET /v2/transparents/check`, no máximo uma vez a cada 10 s por pedido.
 - Uma tarefa do Action Scheduler roda 2 min depois da expiração do Pix. Se a cobrança estiver paga, confirma o pedido; se expirou, cancela e devolve o estoque (configurável).
 
 ## Segurança do webhook
@@ -43,7 +42,7 @@ Parcelas vão de 1x a 12x (configurável), sem juros para o cliente e com no mí
 ## Boleto
 
 - A cobrança é criada com `POST /v2/transparents/create` (`method: "BOLETO"`). O vencimento (`dueDate`) é calculado em dias corridos a partir do pedido, no fuso da loja. Juros (`interest`, % ao mês) e multa (`fine`, percentual ou valor fixo) são opcionais.
-- A página do pedido, "Minha conta" e o e-mail mostram a linha digitável, o link para ver e imprimir o boleto, o vencimento e o Pix alternativo que a AbacatePay gera para a mesma cobrança. A página consulta o status a cada 10 s, porque um pagamento pelo Pix alternativo confirma na hora.
+- A página do pedido, "Minha conta" e o e-mail mostram a linha digitável, o link para ver e imprimir o boleto, o vencimento e o Pix alternativo que a AbacatePay gera para a mesma cobrança.
 - Não existe webhook de vencimento. Um dia depois do vencimento, uma tarefa do Action Scheduler consulta `GET /v2/transparents/get` uma vez por dia: confirma o pedido se estiver pago e cancela (configurável) quando a AbacatePay informa `EXPIRED`. São até 7 consultas, ou 60 quando há juros ou multa, porque nesse caso o boleto pode ser pago com atraso.
 - CPF/CNPJ e nome são obrigatórios; e-mail e telefone vão junto quando existem.
 - A API não reembolsa boletos, então o reembolso precisa ser manual.

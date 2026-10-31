@@ -1,10 +1,8 @@
 /**
- * Pix instructions: copy button, expiration countdown and payment status polling.
+ * Pix instructions: copy button and expiration countdown. Payment confirmation comes from the webhook.
  */
 (function () {
 	'use strict';
-
-	var POLL_INTERVAL = 5000;
 
 	function copyText(field) {
 		if (navigator.clipboard && window.isSecureContext) {
@@ -34,8 +32,6 @@
 		var statusEl = root.querySelector('.abacatepay-pix__status');
 		var countdownEl = root.querySelector('.abacatepay-pix__countdown');
 		var expiresAt = Date.parse(root.getAttribute('data-expires-at') || '') || 0;
-		var statusUrl = root.getAttribute('data-status-url');
-		var finished = false;
 
 		if (field && copyButton) {
 			var label = copyButton.textContent;
@@ -50,19 +46,8 @@
 			});
 		}
 
-		function finish(message, reload) {
-			finished = true;
-			statusEl.textContent = message;
-
-			if (reload) {
-				setTimeout(function () {
-					window.location.reload();
-				}, 1500);
-			}
-		}
-
 		function tick() {
-			if (finished || !expiresAt) {
+			if (!expiresAt) {
 				return;
 			}
 
@@ -73,43 +58,14 @@
 			}
 
 			if (remaining <= 0) {
-				finish(root.getAttribute('data-expired-message'), false);
+				statusEl.textContent = root.getAttribute('data-expired-message');
 				return;
 			}
 
 			setTimeout(tick, 1000);
 		}
 
-		function poll() {
-			if (finished || !statusUrl) {
-				return;
-			}
-
-			// Don't hit the server from background tabs; check again when the tab is back.
-			if (document.hidden) {
-				setTimeout(poll, POLL_INTERVAL);
-				return;
-			}
-
-			fetch(statusUrl, { credentials: 'same-origin', cache: 'no-store' })
-				.then(function (response) {
-					return response.ok ? response.json() : null;
-				})
-				.then(function (json) {
-					if (json && json.success && json.data.paid) {
-						finish(root.getAttribute('data-paid-message'), true);
-					} else if (json && json.success && json.data.expired) {
-						finish(root.getAttribute('data-expired-message'), false);
-					}
-				})
-				.catch(function () {})
-				.then(function () {
-					setTimeout(poll, POLL_INTERVAL);
-				});
-		}
-
 		tick();
-		setTimeout(poll, POLL_INTERVAL);
 	}
 
 	function boot() {

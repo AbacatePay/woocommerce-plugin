@@ -14,7 +14,6 @@
  * @var string   $due_date    Formatted due date.
  * @var string   $pix_code    Alternative Pix copy and paste code.
  * @var string   $qr_code_url Alternative Pix QR code image.
- * @var string   $status_url
  * @var bool     $late_fees   Whether interest or a fine applies after the due date.
  * @var bool     $dev_mode
  * @var string   $receipt_url
@@ -42,11 +41,7 @@ defined( 'ABSPATH' ) || exit;
 
 	<?php else : ?>
 
-		<div
-			class="abacatepay-boleto__pending"
-			data-status-url="<?php echo esc_url( $status_url ); ?>"
-			data-paid-message="<?php esc_attr_e( 'Payment confirmed! Updating the page…', 'abacatepay-for-woocommerce' ); ?>"
-		>
+		<div class="abacatepay-boleto__pending">
 			<h2><?php esc_html_e( 'Pay with boleto', 'abacatepay-for-woocommerce' ); ?></h2>
 
 			<?php if ( $dev_mode ) : ?>

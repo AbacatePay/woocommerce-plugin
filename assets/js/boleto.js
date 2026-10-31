@@ -1,10 +1,8 @@
 /**
- * Boleto instructions: copy buttons and payment status polling (the alternative Pix confirms instantly).
+ * Boleto instructions: copy buttons. Payment confirmation comes from the webhook.
  */
 (function () {
 	'use strict';
-
-	var POLL_INTERVAL = 10000;
 
 	function copyText(field) {
 		if (navigator.clipboard && window.isSecureContext) {
@@ -35,46 +33,7 @@
 	}
 
 	function init(root) {
-		var statusEl = root.querySelector('.abacatepay-boleto__status');
-		var statusUrl = root.getAttribute('data-status-url');
-
 		Array.prototype.forEach.call(root.querySelectorAll('.abacatepay-boleto__copy-button'), initCopyButton);
-
-		function poll() {
-			if (!statusUrl) {
-				return;
-			}
-
-			// Don't hit the server from background tabs; check again when the tab is back.
-			if (document.hidden) {
-				setTimeout(poll, POLL_INTERVAL);
-				return;
-			}
-
-			fetch(statusUrl, { credentials: 'same-origin', cache: 'no-store' })
-				.then(function (response) {
-					return response.ok ? response.json() : null;
-				})
-				.then(function (json) {
-					if (json && json.success && (json.data.paid || json.data.expired)) {
-						if (json.data.paid) {
-							statusEl.textContent = root.getAttribute('data-paid-message');
-						}
-
-						setTimeout(function () {
-							window.location.reload();
-						}, 1500);
-						return;
-					}
-
-					setTimeout(poll, POLL_INTERVAL);
-				})
-				.catch(function () {
-					setTimeout(poll, POLL_INTERVAL);
-				});
-		}
-
-		setTimeout(poll, POLL_INTERVAL);
 	}
 
 	function boot() {
