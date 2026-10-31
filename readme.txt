@@ -17,7 +17,7 @@ Accept Pix, credit card and boleto payments with AbacatePay, with automatic orde
 Customers complete the purchase and see the Pix QR Code and the Pix Copy and Paste code on the order page, without leaving the store. As soon as the Pix is paid, the order is confirmed automatically.
 
 * Transparent checkout: Pix QR Code and Copy and Paste code on the "order received" page, in "My account" and in the order email.
-* Automatic confirmation through webhooks, with an order page that refreshes by itself.
+* Automatic confirmation through webhooks.
 * Automatic cancellation (with stock restored) when the Pix expires without payment.
 * Refunds from the order screen (AbacatePay only supports full refunds).
 * Refunds and disputes made outside WooCommerce also update the order.
@@ -50,7 +50,7 @@ AbacatePay terms of use and privacy policy: https://www.abacatepay.com/termos
 
 = Is the order confirmed without the webhook? =
 
-Yes, but with a delay: while the customer is on the order page, it checks the status with AbacatePay every few seconds. A scheduled task also checks the charge right after the Pix expires. The webhook is still the recommended setup.
+Only with a long delay: a scheduled task checks the charge after the Pix or boleto expires. Configure the webhook so orders are confirmed as soon as they are paid.
 
 = How can I test without real money? =
 

@@ -780,10 +780,6 @@ msgid ""
 "The payment time is over. Please place a new order or contact the store."
 msgstr ""
 
-#: templates/boleto-instructions.php:48 templates/pix-instructions.php:50
-msgid "Payment confirmed! Updating the page…"
-msgstr ""
-
 #: templates/boleto-instructions.php:50
 #: templates/emails/boleto-instructions.php:21
 #: templates/emails/plain/boleto-instructions.php:18
@@ -908,6 +904,6 @@ msgstr ""
 msgid "Scan the QR code or paste the Pix code below."
 msgstr ""
 
-#: templates/pix-instructions.php:62
-msgid "Confirm the payment. This page updates automatically."
+#: templates/pix-instructions.php:59
+msgid "Confirm the payment. We will email you as soon as it is confirmed."
 msgstr ""

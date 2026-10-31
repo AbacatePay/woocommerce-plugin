@@ -11,7 +11,6 @@
  * @var bool     $expired
  * @var string   $br_code
  * @var string   $qr_code_url
- * @var string   $status_url
  * @var string   $expires_at  ISO 8601.
  * @var bool     $dev_mode
  * @var string   $receipt_url
@@ -45,9 +44,7 @@ defined( 'ABSPATH' ) || exit;
 
 		<div
 			class="abacatepay-pix__pending"
-			data-status-url="<?php echo esc_url( $status_url ); ?>"
 			data-expires-at="<?php echo esc_attr( $expires_at ); ?>"
-			data-paid-message="<?php esc_attr_e( 'Payment confirmed! Updating the page…', 'abacatepay-for-woocommerce' ); ?>"
 			data-expired-message="<?php esc_attr_e( 'This Pix has expired. Reload the page to see your options.', 'abacatepay-for-woocommerce' ); ?>"
 		>
 			<h2><?php esc_html_e( 'Pay with Pix', 'abacatepay-for-woocommerce' ); ?></h2>
@@ -59,7 +56,7 @@ defined( 'ABSPATH' ) || exit;
 			<ol class="abacatepay-pix__steps">
 				<li><?php esc_html_e( 'Open your bank app and choose to pay with Pix.', 'abacatepay-for-woocommerce' ); ?></li>
 				<li><?php esc_html_e( 'Scan the QR code or paste the Pix code below.', 'abacatepay-for-woocommerce' ); ?></li>
-				<li><?php esc_html_e( 'Confirm the payment. This page updates automatically.', 'abacatepay-for-woocommerce' ); ?></li>
+				<li><?php esc_html_e( 'Confirm the payment. We will email you as soon as it is confirmed.', 'abacatepay-for-woocommerce' ); ?></li>
 			</ol>
 
 			<div class="abacatepay-pix__body">

@@ -15,13 +15,7 @@ defined( 'ABSPATH' ) || exit;
  */
 final class AbacatePay_WC_Boleto_Details {
 
-	const STATUS_ENDPOINT  = 'abacatepay_boleto_status';
 	const QR_CODE_ENDPOINT = 'abacatepay_boleto_pix_qr_code';
-
-	/**
-	 * Minimum interval between two status checks against the API for the same order, in seconds.
-	 */
-	const STATUS_CHECK_INTERVAL = 15;
 
 	/**
 	 * Registers hooks.
@@ -32,7 +26,6 @@ final class AbacatePay_WC_Boleto_Details {
 		add_action( 'woocommerce_view_order', array( self::class, 'view_order_page' ), 5 );
 		add_action( 'woocommerce_email_before_order_table', array( self::class, 'email_instructions' ), 10, 3 );
 
-		add_action( 'wc_ajax_' . self::STATUS_ENDPOINT, array( self::class, 'ajax_status' ) );
 		add_action( 'wc_ajax_' . self::QR_CODE_ENDPOINT, array( self::class, 'ajax_qr_code' ) );
 
 		add_action( AbacatePay_WC_Boleto_Gateway::CHECK_HOOK, array( self::class, 'run_scheduled_check' ) );
@@ -153,46 +146,9 @@ final class AbacatePay_WC_Boleto_Details {
 			'due_date'    => self::format_due_date( (string) $order->get_meta( AbacatePay_WC_Boleto_Gateway::META_EXPIRES_AT ) ),
 			'pix_code'    => (string) $order->get_meta( AbacatePay_WC_Boleto_Gateway::META_PIX_BR_CODE ),
 			'qr_code_url' => '' !== $qr_code ? self::endpoint_url( self::QR_CODE_ENDPOINT, $order ) : '',
-			'status_url'  => self::endpoint_url( self::STATUS_ENDPOINT, $order ),
 			'late_fees'   => 'yes' === $order->get_meta( AbacatePay_WC_Boleto_Gateway::META_LATE_FEES ),
 			'dev_mode'    => 'yes' === $order->get_meta( AbacatePay_WC_Gateway::META_DEV_MODE ),
 			'receipt_url' => (string) $order->get_meta( AbacatePay_WC_Gateway::META_RECEIPT_URL ),
-		);
-	}
-
-	/**
-	 * Polled by the order page, so a payment with the alternative Pix shows up right away. Checks AbacatePay
-	 * directly (throttled) so it works even when the webhook is not configured.
-	 */
-	public static function ajax_status() {
-		$order = self::get_order_from_request();
-
-		if ( ! $order ) {
-			wp_send_json_error( null, 403 );
-		}
-
-		nocache_headers();
-
-		$paid         = AbacatePay_WC_Gateway::is_order_paid( $order );
-		$throttle_key = 'abacatepay_boleto_checked_' . $order->get_id();
-
-		if ( ! $paid && ! $order->has_status( 'cancelled' ) && false === get_transient( $throttle_key ) ) {
-			set_transient( $throttle_key, 1, self::STATUS_CHECK_INTERVAL );
-
-			$gateway = AbacatePay_WC::gateway( AbacatePay_WC_Boleto_Gateway::ID );
-
-			if ( $gateway ) {
-				$gateway->sync_charge_status( $order );
-				$order = wc_get_order( $order->get_id() );
-				$paid  = AbacatePay_WC_Gateway::is_order_paid( $order );
-			}
-		}
-
-		wp_send_json_success(
-			array(
-				'paid'    => $paid,
-				'expired' => ! $paid && $order->has_status( 'cancelled' ),
-			)
 		);
 	}
 
